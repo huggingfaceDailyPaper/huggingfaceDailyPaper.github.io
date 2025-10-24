@@ -288,8 +288,29 @@
             <p>Speculative Decoding (SD) accelerates large language model inference by employing a small draft model to generate predictions, which are then verified by a larger target model. The effectiveness of SD hinges on the alignment between these models, which is typically enhanced by Knowledge Distillation (KD). However, conventional KD methods aim to minimize the KL divergence between the draft and target models across all tokens, a goal that is misaligned with the true objective of SD, which is to maximize token acceptance rate. Therefore, draft models often struggle to fully assimilate the target model's knowledge due to capacity constraints, leading to suboptimal performance. To address this challenge, we propose AdaSPEC, a novel method that incorporates selective token filtering into the KD process. AdaSPEC utilizes a reference model to identify and filter out difficult-to-fit tokens, enabling the distillation of a draft model that better aligns with the target model on simpler tokens. This approach improves the overall token acceptance rate without compromising generation quality. We evaluate AdaSPEC across diverse tasks, including arithmetic reasoning, instruction-following, coding, and summarization, using model configurations of 31M/1.4B and 350M/2.7B parameters. Our results demonstrate that AdaSPEC consistently outperforms the state-of-the-art DistillSpec method, achieving higher acceptance rates across all tasks (up to 15\%). The code is publicly available at https://github.com/yuezhouhu/adaspec.</p>
         </div>
     
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
+        <div class="analysis-section">
+            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <div class="motivation">
+                <p>论文关注加速大模型推理的Speculative Decoding（SD）中，草稿模型与目标模型对齐不充分导致接受率（α）偏低、速度收益受限的问题。现有做法多用在所有token上最小化前向KL的知识蒸馏，但这与SD真正目标——最大化被目标模型一次性接受的token比例——并不一致，且会把小模型有限容量浪费在难以学习、无助于提升接受率的token上。由于草稿模型容量受限，传统全量蒸馏还易出现收敛困难与性能瓶颈。因此，需要一种面向SD场景、兼顾容量约束与接受率目标的选择性蒸馏策略。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <div class="method">
+                <p>AdaSPEC提出“两阶段、选择性蒸馏”的技术路线：先用目标模型对草稿模型的副本训练得到参考模型，再用参考模型筛除难以拟合的token，仅在“更可学”的token上蒸馏草稿模型。具体做法是对每个token计算以目标为教师的KL损失Lref与Ldraft，构造ΔL=Ldraft−Lref并选取ΔL较大的top-k% token（参考模型能学好而草稿模型尚未学会的部分）参与损失，优化前向KL以强化对可学token的对齐。该策略将小模型容量集中用于最能提升接受率的区域，避免在“硬样本”上过度消耗容量。论文还给出端到端算法、k的选择（常用0.4）与实现细节，易于与现有SD框架集成。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">📊</span>实验结果</h3>
+            <div class="results">
+                <p>在Pythia-31M→1.4B与CodeGen-350M→Phi-2两组配置、GSM8K/Alpaca/MBPP/CNN-DM/XSUM五项任务上，AdaSPEC在3轮与最优轮次两种设置下均显著提升接受率α，最高绝对提升达约15%（如MBPP在Pythia配置的最优轮次由49.88%到65.12%）。分布层面，AdaSPEC相较DistillSpec呈现更高的正logit间隔与更低的token级KL（图2），显示对齐度与预测置信度同步提升。实际墙钟评测中（vLLM，A100），AdaSPEC带来约10–20%生成加速；与更先进的EAGLE集成也获得+7.45% tokens/s与小幅精度提升。消融显示：选取top-40% token显著优于bottom-40%；前向KL优于RKL/TVD；较小k（0.2–0.4）通常更佳；方法可扩展到更大模型对（如Qwen2.5-0.5B→32B）并在混合任务训练中更少遗忘。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">💡</span>研究思路</h3>
+            <div class="idea">
+                <p>可进一步设计更自适应的筛选机制，例如基于不确定性、难度建模或动态k的样本/token级调度，并探索“端到端联合”训练参考与草稿模型。目标函数上，可直接优化与SD更一致的指标（如接受率、block效率）或引入多目标权衡质量与速度。体系结构层面，结合树/多步验证的先进SD（EAGLE、Draft&Verify等）与系统层优化（缓存、量化/LoRA）形成正交增益。任务与泛化角度，可研究跨任务/领域课程学习与混合数据稳健性，分析不同规模差下的上限与失效模式，并探索跨家族/跨分词器的一致性蒸馏。最后，可引入更丰富反馈（如拒绝原因、校验置信）驱动“哪些token值得学”的闭环选择。</p>
+            </div>
         </div>    </div>
     <div class="paper">
         <h2 class="paper-title">Open-o3 Video: Grounded Video Reasoning with Explicit Spatio-Temporal Evidence</h2>
@@ -304,8 +325,29 @@
             <p>Most video reasoning models only generate textual reasoning traces without indicating when and where key evidence appears. Recent models such as OpenAI-o3 have sparked wide interest in evidence-centered reasoning for images, yet extending this ability to videos is more challenging, as it requires joint temporal tracking and spatial localization across dynamic scenes. We introduce Open-o3 Video, a non-agent framework that integrates explicit spatio-temporal evidence into video reasoning, and carefully collect training data and design training strategies to address the aforementioned challenges. The model highlights key timestamps, objects, and bounding boxes alongside its answers, allowing reasoning to be grounded in concrete visual observations. To enable this functionality, we first curate and build two high-quality datasets, STGR-CoT-30k for SFT and STGR-RL-36k for RL, with carefully constructed temporal and spatial annotations, since most existing datasets offer either temporal spans for videos or spatial boxes on images, lacking unified spatio-temporal supervision and reasoning traces. Then, we adopt a cold-start reinforcement learning strategy with multiple specially designed rewards that jointly encourage answer accuracy, temporal alignment, and spatial precision. On V-STAR benchmark, Open-o3 Video achieves state-of-the-art performance, raising mAM by 14.4% and mLGM by 24.2% on the Qwen2.5-VL baseline. Consistent improvements are also observed on a broad range of video understanding benchmarks, including VideoMME, WorldSense, VideoMMMU, and TVGBench. Beyond accuracy, the reasoning traces produced by Open-o3 Video also provide valuable signals for test-time scaling, enabling confidence-aware verification and improving answer reliability.</p>
         </div>
     
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
+        <div class="analysis-section">
+            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <div class="motivation">
+                <p>论文针对视频推理中“只会给文字理由、不知道证据何时何地出现”的问题。作者指出，现有方法要么仅给文本CoT、要么只做时间或空间单侧定位，难以在动态场景中实现精确的时空对齐（见第2页图1）。根因在于缺乏统一的时空标注与可验证的推理轨迹，以及训练中的时空耦合与奖励稀疏（第2–3页）。该问题关系到视频推理的可解释性、可验证性与可靠性，亦呼应V-STAR等基准对“what–when–where”的综合评估需求（第7–8页）。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <div class="method">
+                <p>提出Open-o3 Video：单模型、非agent框架，生成带时间戳与框选区域的显式时空证据，并将其嵌入推理链（第5页图3）。数据方面构建两套语料STGR-CoT-30k与STGR-RL-36k，含5.9k高质量时空样本，管线包括Gemini 2.5 Pro初注、框过滤与一致性校验，覆盖时/空/时空/通用QA多分布（第4页图2）。训练采用“两阶段”：先SFT冷启动学会结构化、可对齐输出，再用GSPO进行RL，复合奖励由答案准确、思考（时间+空间）和格式三部分组成；其中时间项用自适应时间近邻（σ退火）缓解稀疏并逐步收紧，空间项用时间门控（|Δt|≤τ才计IoU）确保时空一致（第6–7页）。实现上统一采样16帧并注入绝对时间戳，GSPO替代GRPO以稳定长链优化（第6页）。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">📊</span>实验结果</h3>
+            <div class="results">
+                <p>在V-STAR上，Open-o3 Video取得SOTA：相对Qwen2.5-VL-7B，mAM提升+14.4%、mLGM+24.2%，并超过GPT-4o（第8页表1）。具体维度：What准确率61.0；When（tIoU）在Chain1/2为24.5/24.0；Where（vIoU）在Chain1/2为25.4/6.0，均显著优于基线（第8页表1）。在VideoMME、WorldSense、VideoMMMU与TVGBench也全面提升，尤以长视频(+4.1)与时序定位mIoU(+4.5)突出（第9页表2）。消融显示SFT+RL(GSPO)最佳；自适应时间近邻与时间门控分别带来稳定且可信的时空奖励，去除将显著下降（第10页表4、表3）；高质量时空数据是关键驱动（第10页表5）。基于时空证据的信心加权投票优于多数投票，在WorldSense与VideoMMMU各+1.0（第16与19页图6、表7）。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">💡</span>研究思路</h3>
+            <div class="idea">
+                <p>数据层面：扩充更长、更复杂场景与小目标的高质量时空标注，覆盖多域与更细粒度事件（第17页A.7）。模型/训练：引入音频与语音以多模态对齐；探索更强的跨步推理与记忆机制；优化奖励设计（如层级/因果约束）与更稳健的序列级RL。推理与验证：进一步发展基于证据的自检与测试时标度（如多样化采样、证据一致性评分、跨链顺序一致性）。系统化扩展：从“想与帧”走向“想与轨迹/片段”，结合跟踪与多对象关系建模，或与轻量工具/agent柔性结合以处理超长视频与复杂任务。</p>
+            </div>
         </div>    </div>
     <div class="paper">
         <h2 class="paper-title">Human-Agent Collaborative Paper-to-Page Crafting for Under $0.1</h2>
@@ -320,279 +362,50 @@
             <p>In the quest for scientific progress, communicating research is as vital as the discovery itself. Yet, researchers are often sidetracked by the manual, repetitive chore of building project webpages to make their dense papers accessible. While automation has tackled static slides and posters, the dynamic, interactive nature of webpages has remained an unaddressed challenge. To bridge this gap, we reframe the problem, arguing that the solution lies not in a single command, but in a collaborative, hierarchical process. We introduce AutoPage, a novel multi-agent system that embodies this philosophy. AutoPage deconstructs paper-to-page creation into a coarse-to-fine pipeline from narrative planning to multimodal content generation and interactive rendering. To combat AI hallucination, dedicated "Checker" agents verify each step against the source paper, while optional human checkpoints ensure the final product aligns perfectly with the author's vision, transforming the system from a mere tool into a powerful collaborative assistant. To rigorously validate our approach, we also construct PageBench, the first benchmark for this new task. Experiments show AutoPage not only generates high-quality, visually appealing pages but does so with remarkable efficiency in under 15 minutes for less than \0.1. Code and dataset will be released at https://mqleet.github.io/AutoPage_ProjectPage/{Webpage}$.</p>
         </div>
     
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div></div>
-<div class="page" id="page-2">
-
-    <div class="paper">
-        <h2 class="paper-title">HoloCine: Holistic Generation of Cinematic Multi-Shot Long Video Narratives</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20822" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20822" target="_blank" class="pdf">Open PDF</a>
+        <div class="analysis-section">
+            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <div class="motivation">
+                <p>论文聚焦“论文到项目网页”的自动化生成问题：研究者目前需要手工搭建项目页，耗时且质量不一。现有自动化多集中于静态载体（海报、幻灯、视频），难以处理网页的可滚动结构与交互元素，端到端LLM还常出现布局不合理、内容幻觉、缺乏人类反馈的问题（图1，第1页）。项目网页已成为研究传播与可复现性的关键入口，因此亟需既高质量又高效率、可交互且可控的生成方案。作者据此提出以人机协作、分层粗到细的思路替代单次端到端生成。</p>
+            </div>
         </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>State-of-the-art text-to-video models excel at generating isolated clips but fall short of creating the coherent, multi-shot narratives, which are the essence of storytelling. We bridge this "narrative gap" with HoloCine, a model that generates entire scenes holistically to ensure global consistency from the first shot to the last. Our architecture achieves precise directorial control through a Window Cross-Attention mechanism that localizes text prompts to specific shots, while a Sparse Inter-Shot Self-Attention pattern (dense within shots but sparse between them) ensures the efficiency required for minute-scale generation. Beyond setting a new state-of-the-art in narrative coherence, HoloCine develops remarkable emergent abilities: a persistent memory for characters and scenes, and an intuitive grasp of cinematic techniques. Our work marks a pivotal shift from clip synthesis towards automated filmmaking, making end-to-end cinematic creation a tangible future. Our code is available at: https://holo-cine.github.io/.</p>
+        <div class="analysis-section">
+            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <div class="method">
+                <p>作者提出AutoPage——多智能体、人机协作的三阶段流水线：1）叙事规划与结构化：用MinerU与Docling将PDF解析为Markdown与“资产库”，经内容规划器生成网页大纲并设有“Checker”校验（图2，第4页）。2）多模态内容生成：遵循“先文本后视觉”，先由文本生成器产出网页段落，再由视觉生成器从资产库精确挑选图表并进行一致性检查，支持可选的人类微调。3）交互式渲染：基于带标签的模板库做模板匹配与整合，由HTML生成器输出HTML/CSS/JS，并用HTML Checker做版式与可视完整性检查，允许最终样式指令微调。作者同时构建PageBench基准（1500+人类项目页，测试集100、模板库87），提出包含可读性、语义保真、压缩感知信息准确性与VLM-as-Judge视觉三维度的评测协议（第5–6页）。关键贡献在于：多代理分阶段协作、双重校验防幻觉、可选人类回路增强对齐，以及首个面向该任务的系统化基准与指标体系。</p>
+            </div>
         </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">Loopholing Discrete Diffusion: Deterministic Bypass of the Sampling Wall</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.19304" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.19304" target="_blank" class="pdf">Open PDF</a>
+        <div class="analysis-section">
+            <h3><span class="emoji">📊</span>实验结果</h3>
+            <div class="results">
+                <p>AutoPage在多种底模上稳定提升端到端方法：如GPT‑4o‑mini基线上，美学得分2.71→2.95、布局与整体性2.08→2.38、视觉要素准确性2.96→3.08、语义保真0.554→0.621，压缩感知信息准确性1.786→1.941（表1，第6页）。在Gemini‑2.5‑Flash上，视觉要素2.82→3.13，语义保真0.684→0.742，压缩感知指标1.276→1.591（表1）。对弱底模提升更显著，显著缩小不同底模间的性能鸿沟（第7页）。用户偏好实验中，AutoPage平均得分7.16/10，高于Grok4‑fast(6.93)与Gemini2.5‑Flash(6.79)（图3，第7页）。消融显示校验器至关重要：移除全部校验后视觉要素精准度3.13→2.75，美学2.69→1.90，布局2.15→1.60（表2，第11页）；效率上，典型生成4–20分钟、成本$0.06–$0.20，使用Gemini‑2.5‑Flash可在15分钟内低于$0.1（第8页）。</p>
+            </div>
         </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Discrete diffusion models offer a promising alternative to autoregressive generation through parallel decoding, but they suffer from a sampling wall: once categorical sampling occurs, rich distributional information collapses into one-hot vectors and cannot be propagated across steps, forcing subsequent steps to operate with limited information. To mitigate this problem, we introduce Loopholing, a novel and simple mechanism that preserves this information via a deterministic latent pathway, leading to Loopholing Discrete Diffusion Models (LDDMs). Trained efficiently with a self-conditioning strategy, LDDMs achieve substantial gains-reducing generative perplexity by up to 61% over prior baselines, closing (and in some cases surpassing) the gap with autoregressive models, and producing more coherent text. Applied to reasoning tasks, LDDMs also improve performance on arithmetic benchmarks such as Countdown and Game of 24. These results also indicate that loopholing mitigates idle steps and oscillations, providing a scalable path toward high-quality non-autoregressive text generation.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">Every Question Has Its Own Value: Reinforcement Learning with Explicit Human Values</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20187" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20187" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>We propose Reinforcement Learning with Explicit Human Values (RLEV), a method that aligns Large Language Model (LLM) optimization directly with quantifiable human value signals. While Reinforcement Learning with Verifiable Rewards (RLVR) effectively trains models in objective domains using binary correctness rewards, it overlooks that not all tasks are equally significant. RLEV extends this framework by incorporating human-defined value signals directly into the reward function. Using exam-style data with explicit ground-truth value labels, RLEV consistently outperforms correctness-only baselines across multiple RL algorithms and model scales. Crucially, RLEV policies not only improve value-weighted accuracy but also learn a value-sensitive termination policy: concise for low-value prompts, thorough for high-value ones. We demonstrate this behavior stems from value-weighted gradient amplification on end-of-sequence tokens. Ablation studies confirm the gain is causally linked to value alignment. RLEV remains robust under noisy value signals, such as difficulty-based labels, demonstrating that optimizing for an explicit utility function offers a practical path to aligning LLMs with human priorities.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div></div>
-<div class="page" id="page-3">
-
-    <div class="paper">
-        <h2 class="paper-title">The Massive Legal Embedding Benchmark (MLEB)</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.19365" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.19365" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>We present the Massive Legal Embedding Benchmark (MLEB), the largest, most diverse, and most comprehensive open-source benchmark for legal information retrieval to date. MLEB consists of ten expert-annotated datasets spanning multiple jurisdictions (the US, UK, EU, Australia, Ireland, and Singapore), document types (cases, legislation, regulatory guidance, contracts, and literature), and task types (search, zero-shot classification, and question answering). Seven of the datasets in MLEB were newly constructed in order to fill domain and jurisdictional gaps in the open-source legal information retrieval landscape. We document our methodology in building MLEB and creating the new constituent datasets, and release our code, results, and data openly to assist with reproducible evaluations.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">DyPE: Dynamic Position Extrapolation for Ultra High Resolution Diffusion</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20766" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20766" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Diffusion Transformer models can generate images with remarkable fidelity and detail, yet training them at ultra-high resolutions remains extremely costly due to the self-attention mechanism's quadratic scaling with the number of image tokens. In this paper, we introduce Dynamic Position Extrapolation (DyPE), a novel, training-free method that enables pre-trained diffusion transformers to synthesize images at resolutions far beyond their training data, with no additional sampling cost. DyPE takes advantage of the spectral progression inherent to the diffusion process, where low-frequency structures converge early, while high-frequencies take more steps to resolve. Specifically, DyPE dynamically adjusts the model's positional encoding at each diffusion step, matching their frequency spectrum with the current stage of the generative process. This approach allows us to generate images at resolutions that exceed the training resolution dramatically, e.g., 16 million pixels using FLUX. On multiple benchmarks, DyPE consistently improves performance and achieves state-of-the-art fidelity in ultra-high-resolution image generation, with gains becoming even more pronounced at higher resolutions. Project page is available at https://noamissachar.github.io/DyPE/.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">Search Self-play: Pushing the Frontier of Agent Capability without Supervision</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.18821" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.18821" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Reinforcement learning with verifiable rewards (RLVR) has become the mainstream technique for training LLM agents. However, RLVR highly depends on well-crafted task queries and corresponding ground-truth answers to provide accurate rewards, which requires massive human efforts and hinders the RL scaling processes, especially under agentic scenarios. Although a few recent works explore task synthesis methods, the difficulty of generated agentic tasks can hardly be controlled to provide effective RL training advantages. To achieve agentic RLVR with higher scalability, we explore self-play training for deep search agents, in which the learning LLM utilizes multi-turn search engine calling and acts simultaneously as both a task proposer and a problem solver. The task proposer aims to generate deep search queries with well-defined ground-truth answers and increasing task difficulty. The problem solver tries to handle the generated search queries and output the correct answer predictions. To ensure that each generated search query has accurate ground truth, we collect all the searching results from the proposer's trajectory as external knowledge, then conduct retrieval-augmentation generation (RAG) to test whether the proposed query can be correctly answered with all necessary search documents provided. In this search self-play (SSP) game, the proposer and the solver co-evolve their agent capabilities through both competition and cooperation. With substantial experimental results, we find that SSP can significantly improve search agents' performance uniformly on various benchmarks without any supervision under both from-scratch and continuous RL training setups. The code is at https://github.com/Alibaba-Quark/SSP.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div></div>
-<div class="page" id="page-4">
-
-    <div class="paper">
-        <h2 class="paper-title">LayerComposer: Interactive Personalized T2I via Spatially-Aware Layered Canvas</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20820" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20820" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Despite their impressive visual fidelity, existing personalized generative models lack interactive control over spatial composition and scale poorly to multiple subjects. To address these limitations, we present LayerComposer, an interactive framework for personalized, multi-subject text-to-image generation. Our approach introduces two main contributions: (1) a layered canvas, a novel representation in which each subject is placed on a distinct layer, enabling occlusion-free composition; and (2) a locking mechanism that preserves selected layers with high fidelity while allowing the remaining layers to adapt flexibly to the surrounding context. Similar to professional image-editing software, the proposed layered canvas allows users to place, resize, or lock input subjects through intuitive layer manipulation. Our versatile locking mechanism requires no architectural changes, relying instead on inherent positional embeddings combined with a new complementary data sampling strategy. Extensive experiments demonstrate that LayerComposer achieves superior spatial control and identity preservation compared to the state-of-the-art methods in multi-subject personalized image generation.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">ARGenSeg: Image Segmentation with Autoregressive Image Generation Model</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20803" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20803" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>We propose a novel AutoRegressive Generation-based paradigm for image Segmentation (ARGenSeg), achieving multimodal understanding and pixel-level perception within a unified framework. Prior works integrating image segmentation into multimodal large language models (MLLMs) typically employ either boundary points representation or dedicated segmentation heads. These methods rely on discrete representations or semantic prompts fed into task-specific decoders, which limits the ability of the MLLM to capture fine-grained visual details. To address these challenges, we introduce a segmentation framework for MLLM based on image generation, which naturally produces dense masks for target objects. We leverage MLLM to output visual tokens and detokenize them into images using an universal VQ-VAE, making the segmentation fully dependent on the pixel-level understanding of the MLLM. To reduce inference latency, we employ a next-scale-prediction strategy to generate required visual tokens in parallel. Extensive experiments demonstrate that our method surpasses prior state-of-the-art approaches on multiple segmentation datasets with a remarkable boost in inference speed, while maintaining strong understanding capabilities.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">Seed3D 1.0: From Images to High-Fidelity Simulation-Ready 3D Assets</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.19944" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.19944" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Developing embodied AI agents requires scalable training environments that balance content diversity with physics accuracy. World simulators provide such environments but face distinct limitations: video-based methods generate diverse content but lack real-time physics feedback for interactive learning, while physics-based engines provide accurate dynamics but face scalability limitations from costly manual asset creation. We present Seed3D 1.0, a foundation model that generates simulation-ready 3D assets from single images, addressing the scalability challenge while maintaining physics rigor. Unlike existing 3D generation models, our system produces assets with accurate geometry, well-aligned textures, and realistic physically-based materials. These assets can be directly integrated into physics engines with minimal configuration, enabling deployment in robotic manipulation and simulation training. Beyond individual objects, the system scales to complete scene generation through assembling objects into coherent environments. By enabling scalable simulation-ready content creation, Seed3D 1.0 provides a foundation for advancing physics-based world simulators. Seed3D 1.0 is now available on https://console.volcengine.com/ark/region:ark+cn-beijing/experience/vision?modelId=doubao-seed3d-1-0-250928&tab=Gen3D</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div></div>
-<div class="page" id="page-5">
-
-    <div class="paper">
-        <h2 class="paper-title">AlphaFlow: Understanding and Improving MeanFlow Models</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20771" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20771" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>MeanFlow has recently emerged as a powerful framework for few-step generative modeling trained from scratch, but its success is not yet fully understood. In this work, we show that the MeanFlow objective naturally decomposes into two parts: trajectory flow matching and trajectory consistency. Through gradient analysis, we find that these terms are strongly negatively correlated, causing optimization conflict and slow convergence. Motivated by these insights, we introduce alpha-Flow, a broad family of objectives that unifies trajectory flow matching, Shortcut Model, and MeanFlow under one formulation. By adopting a curriculum strategy that smoothly anneals from trajectory flow matching to MeanFlow, alpha-Flow disentangles the conflicting objectives, and achieves better convergence. When trained from scratch on class-conditional ImageNet-1K 256x256 with vanilla DiT backbones, alpha-Flow consistently outperforms MeanFlow across scales and settings. Our largest alpha-Flow-XL/2+ model achieves new state-of-the-art results using vanilla DiT backbones, with FID scores of 2.58 (1-NFE) and 2.15 (2-NFE).</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">From Masks to Worlds: A Hitchhiker's Guide to World Models</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20668" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20668" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>This is not a typical survey of world models; it is a guide for those who want to build worlds. We do not aim to catalog every paper that has ever mentioned a ``world model". Instead, we follow one clear road: from early masked models that unified representation learning across modalities, to unified architectures that share a single paradigm, then to interactive generative models that close the action-perception loop, and finally to memory-augmented systems that sustain consistent worlds over time. We bypass loosely related branches to focus on the core: the generative heart, the interactive loop, and the memory system. We show that this is the most promising path towards true world models.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">Conan: Progressive Learning to Reason Like a Detective over Multi-Scale Visual Evidence</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20470" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20470" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Video reasoning, which requires multi-step deduction across frames, remains a major challenge for multimodal large language models (MLLMs). While reinforcement learning (RL)-based methods enhance reasoning capabilities, they often rely on text-only chains that yield ungrounded or hallucinated conclusions. Conversely, frame-retrieval approaches introduce visual grounding but still struggle with inaccurate evidence localization. To address these challenges, we present Conan, a framework for evidence-grounded multi-step video reasoning. Conan identifies contextual and evidence frames, reasons over cross-frame clues, and adaptively decides when to conclude or explore further. To achieve this, we (1) construct Conan-91K, a large-scale dataset of automatically generated reasoning traces that includes frame identification, evidence reasoning, and action decision, and (2) design a multi-stage progressive cold-start strategy combined with an Identification-Reasoning-Action (AIR) RLVR training framework to jointly enhance multi-step visual reasoning. Extensive experiments on six multi-step reasoning benchmarks demonstrate that Conan surpasses the baseline Qwen2.5-VL-7B-Instruct by an average of over 10% in accuracy, achieving state-of-the-art performance. Furthermore, Conan generalizes effectively to long-video understanding tasks, validating its strong scalability and robustness.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div></div>
-<div class="page" id="page-6">
-
-    <div class="paper">
-        <h2 class="paper-title">ImpossibleBench: Measuring LLMs' Propensity of Exploiting Test Cases</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20270" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20270" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>The tendency to find and exploit "shortcuts" to complete tasks poses significant risks for reliable assessment and deployment of large language models (LLMs). For example, an LLM agent with access to unit tests may delete failing tests rather than fix the underlying bug. Such behavior undermines both the validity of benchmark results and the reliability of real-world LLM coding assistant deployments. To quantify, study, and mitigate such behavior, we introduce ImpossibleBench, a benchmark framework that systematically measures LLM agents' propensity to exploit test cases. ImpossibleBench creates "impossible" variants of tasks from existing benchmarks like LiveCodeBench and SWE-bench by introducing direct conflicts between the natural-language specification and the unit tests. We measure an agent's "cheating rate" as its pass rate on these impossible tasks, where any pass necessarily implies a specification-violating shortcut. As a practical framework, ImpossibleBench is not just an evaluation but a versatile tool. We demonstrate its utility for: (1) studying model behaviors, revealing more fine-grained details of cheating behaviors from simple test modification to complex operator overloading; (2) context engineering, showing how prompt, test access and feedback loop affect cheating rates; and (3) developing monitoring tools, providing a testbed with verified deceptive solutions. We hope ImpossibleBench serves as a useful framework for building more robust and reliable LLM systems. Our implementation can be found at https://github.com/safety-research/impossiblebench.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">Thought Communication in Multiagent Collaboration</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.20733" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.20733" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Natural language has long enabled human cooperation, but its lossy, ambiguous, and indirect nature limits the potential of collective intelligence. While machines are not subject to these constraints, most LLM-based multi-agent systems still rely solely on natural language, exchanging tokens or their embeddings. To go beyond language, we introduce a new paradigm, thought communication, which enables agents to interact directly mind-to-mind, akin to telepathy. To uncover these latent thoughts in a principled way, we formalize the process as a general latent variable model, where agent states are generated by an unknown function of underlying thoughts. We prove that, in a nonparametric setting without auxiliary information, both shared and private latent thoughts between any pair of agents can be identified. Moreover, the global structure of thought sharing, including which agents share which thoughts and how these relationships are structured, can also be recovered with theoretical guarantees. Guided by the established theory, we develop a framework that extracts latent thoughts from all agents prior to communication and assigns each agent the relevant thoughts, along with their sharing patterns. This paradigm naturally extends beyond LLMs to all modalities, as most observational data arise from hidden generative processes. Experiments on both synthetic and real-world benchmarks validate the theory and demonstrate the collaborative advantages of thought communication. We hope this work illuminates the potential of leveraging the hidden world, as many challenges remain unsolvable through surface-level observation alone, regardless of compute or data scale.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
-        </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">Emergence of Linear Truth Encodings in Language Models</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.15804" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.15804" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Recent probing studies reveal that large language models exhibit linear subspaces that separate true from false statements, yet the mechanism behind their emergence is unclear. We introduce a transparent, one-layer transformer toy model that reproduces such truth subspaces end-to-end and exposes one concrete route by which they can arise. We study one simple setting in which truth encoding can emerge: a data distribution where factual statements co-occur with other factual statements (and vice-versa), encouraging the model to learn this distinction in order to lower the LM loss on future tokens. We corroborate this pattern with experiments in pretrained language models. Finally, in the toy setting we observe a two-phase learning dynamic: networks first memorize individual factual associations in a few steps, then -- over a longer horizon -- learn to linearly separate true from false, which in turn lowers language-modeling loss. Together, these results provide both a mechanistic demonstration and an empirical motivation for how and why linear truth representations can emerge in language models.</p>
-        </div>
-    
-        <div class="no-analysis">
-            <p>No detailed analysis available for this paper.</p>
+        <div class="analysis-section">
+            <h3><span class="emoji">💡</span>研究思路</h3>
+            <div class="idea">
+                <p>进一步方向包括：1）更强的人类偏好对齐与交互编辑（如基于RLAIF/人类指令的样式与叙事个性化），以及多语种、多领域扩展。2）学习型模板检索/生成与自适应布局（从模板库过渡到可学习的布局规划器），增强动态可视化与可访问性（无障碍、移动端适配）。3）更稳健的事实校验：将图表与源PDF页级锚点对齐，强化公式/表格解析与跨段落证据聚合，减少幻觉。4）评测深化：引入真实用户任务完成度与可用性指标，完善VLM‑as‑Judge的标定与一致性检验，并扩充PageBench到更多学科与更复杂交互。5）系统层面优化：自治代理的成本/时延优化、离线/本地化推理与增量更新，以支持规模化与隐私场景。</p>
+            </div>
         </div>    </div></div>
 
         </div>
         
         <div class="pagination">
             <div class="page-info">
-                <span id="current-page-info">Page 1 of 6</span>
+                <span id="current-page-info">Page 1 of 1</span>
             </div>
             <button id="prev-btn" onclick="changePage(-1)" disabled>← 上一页</button>
-            <span id="page-numbers"><button class="page-btn active" onclick="goToPage(1)">1</button><button class="page-btn" onclick="goToPage(2)">2</button><button class="page-btn" onclick="goToPage(3)">3</button><button class="page-btn" onclick="goToPage(4)">4</button><button class="page-btn" onclick="goToPage(5)">5</button><button class="page-btn" onclick="goToPage(6)">6</button></span>
+            <span id="page-numbers"><button class="page-btn active" onclick="goToPage(1)">1</button></span>
             <button id="next-btn" onclick="changePage(1)">下一页 →</button>
         </div>
         
         <div class="footer">
-            <p>Generated on 2025-10-24 08:38:02 | Powered by GPT-5 Analysis</p>
+            <p>Generated on 2025-10-24 08:51:51 | Powered by GPT-5 Analysis</p>
         </div>
     </div>
 
     <script>
         let currentPage = 1;
-        const totalPages = 6;
+        const totalPages = 1;
         
         function showPage(pageNum) {
             // Hide all pages
