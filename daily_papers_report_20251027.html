@@ -332,25 +332,25 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>Large reasoning models have demonstrated strong problem-solving abilities,<br>yet real-world tasks often require external tools and long-horizon<br>interactions. Existing agent frameworks typically follow predefined workflows,<br>which limit autonomous and global task completion. In this paper, we introduce<br>DeepAgent, an end-to-end deep reasoning agent that performs autonomous<br>thinking, tool discovery, and action execution within a single, coherent<br>reasoning process. To address the challenges of long-horizon interactions,<br>particularly the context length explosion from multiple tool calls and the<br>accumulation of interaction history, we introduce an autonomous memory folding<br>mechanism that compresses past interactions into structured episodic, working,<br>and tool memories, reducing error accumulation while preserving critical<br>information. To teach general-purpose tool use efficiently and stably, we<br>develop an end-to-end reinforcement learning strategy, namely ToolPO, that<br>leverages LLM-simulated APIs and applies tool-call advantage attribution to<br>assign fine-grained credit to the tool invocation tokens. Extensive experiments<br>on eight benchmarks, including general tool-use tasks (ToolBench, API-Bank,<br>TMDB, Spotify, ToolHop) and downstream applications (ALFWorld, WebShop, GAIA,<br>HLE), demonstrate that DeepAgent consistently outperforms baselines across both<br>labeled-tool and open-set tool retrieval scenarios. This work takes a step<br>toward more general and capable agents for real-world applications. The code<br>and demo are available at https://github.com/RUC-NLPIR/DeepAgent.</p>
+            <p>Large reasoning models have demonstrated strong problem-solving abilities, yet real-world tasks often require external tools and long-horizon interactions. Existing agent frameworks typically follow predefined workflows, which limit autonomous and global task completion. In this paper, we introduce DeepAgent, an end-to-end deep reasoning agent that performs autonomous thinking, tool discovery, and action execution within a single, coherent reasoning process. To address the challenges of long-horizon interactions, particularly the context length explosion from multiple tool calls and the accumulation of interaction history, we introduce an autonomous memory folding mechanism that compresses past interactions into structured episodic, working, and tool memories, reducing error accumulation while preserving critical information. To teach general-purpose tool use efficiently and stably, we develop an end-to-end reinforcement learning strategy, namely ToolPO, that leverages LLM-simulated APIs and applies tool-call advantage attribution to assign fine-grained credit to the tool invocation tokens. Extensive experiments on eight benchmarks, including general tool-use tasks (ToolBench, API-Bank, TMDB, Spotify, ToolHop) and downstream applications (ALFWorld, WebShop, GAIA, HLE), demonstrate that DeepAgent consistently outperforms baselines across both labeled-tool and open-set tool retrieval scenarios. This work takes a step toward more general and capable agents for real-world applications. The code and demo are available at https://github.com/RUC-NLPIR/DeepAgent.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 现实任务需要外部工具与长程交互，但主流基于预设流程的代理（如ReAct、Plan-and-Solve）执行步骤与整体过程缺乏自主性，难以在统一推理中完成思考-检索-执行。<br>• 现有“深度研究”类方法多仅支持少量预定义工具（搜索/浏览/代码），难以扩展到任意规模、开放集的工具生态，限制真实应用场景适用性。<br>• 长程多轮工具调用导致上下文长度爆炸与历史噪声累积，缺乏稳定、可用且高保真的交互记忆管理机制。<br>• 工具使用的RL训练依赖真实API，存在不稳定、高延迟与高成本问题；仅依赖最终成功的稀疏奖励，无法对中间工具调用进行细粒度信用分配。<br>• 现有工具检索多为单次预检索，难以在任务执行过程中动态发现、试错和切换工具，影响开放场景的鲁棒性与可扩展性。</p>
+                <p>• 现有代理多依赖预设的“Reason-Act-Observe”工作流，缺乏对整体任务的全局深度推理与自主决策，难以稳健完成复杂真实世界任务（见图2a，第1-2页）。<br>• 仅支持少数固定研究型工具（搜索/浏览/代码），难以在开放、可扩展的大规模工具集上动态发现与调用合适工具，应用范围受限（见图2b，第1-2页）。<br>• 长时序多轮交互带来上下文长度爆炸与错误累积，缺少稳健的记忆管理与压缩机制以维持长期推理的效率与正确性（第1页）。<br>• 端到端学会“正确用工具”困难：训练中真实API不稳定、昂贵且慢；仅用最终成功奖励过于稀疏，无法对中间工具调用进行精细归因（第3.5节，第4-5页）。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出DeepAgent，将思考、工具检索与调用以及“记忆折叠”统一到单一连续推理流中：按需密集检索工具并以辅助LLM将历史折叠为情景/工作/工具三类JSON结构记忆以控长保准。并提出ToolPO强化学习，用LLM模拟API稳定大规模训练，并对工具调用/折叠令牌实施优势归因，精细提升中间动作与端到端成功率。</p>
+                <p>DeepAgent将思考、工具检索/调用与“自主记忆折叠”统一到单一推理流中，并用情景-工作-工具三类结构化记忆稳态管理长程交互；训练上提出ToolPO，借助LLM模拟API与工具调用优势归因+全局成功奖励，实现稳定高效的端到端强化学习（见图3，第3页）。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 开放环境下的检索-推理联合优化：利用在线工具反馈自适应更新索引与表示，实现工具检索与策略协同训练，增强开放集泛化。<br>• 可学习的记忆折叠网络：以可微压缩与选择性回放替代外部摘要器，联合优化压缩率与语义保真，支撑更长程与更稳定的推理。<br>• 安全可控的工具智能体：引入调用验证、权限治理与失败恢复机制，结合可验证执行轨迹与因果奖励，提升工具使用的安全性与可靠性。</p>
+                <p>• 自适应记忆折叠与最优性分析：联合优化折叠时机/粒度与数据结构，给出信息保真、样本效率与误差累积的理论界与算法。<br>• 统一检索-生成-调用的工具自进化框架：端到端联合学习工具检索与轻量化工具包装生成，实现对未见工具的自发现、自适配与稳健调用。<br>• 具备可验证与安全约束的工具增强推理：引入执行前/后验证、权限与资源沙箱、反事实回放与故障隔离，系统化提升可靠性与合规性。</p>
             </div>
         </div>    </div>
     <div class="paper">
@@ -363,29 +363,29 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>Unified, generalizable semantic control in video generation remains a<br>critical open challenge. Existing methods either introduce artifacts by<br>enforcing inappropriate pixel-wise priors from structure-based controls, or<br>rely on non-generalizable, condition-specific finetuning or task-specific<br>architectures. We introduce Video-As-Prompt (VAP), a new paradigm that reframes<br>this problem as in-context generation. VAP leverages a reference video as a<br>direct semantic prompt, guiding a frozen Video Diffusion Transformer (DiT) via<br>a plug-and-play Mixture-of-Transformers (MoT) expert. This architecture<br>prevents catastrophic forgetting and is guided by a temporally biased position<br>embedding that eliminates spurious mapping priors for robust context retrieval.<br>To power this approach and catalyze future research, we built VAP-Data, the<br>largest dataset for semantic-controlled video generation with over 100K paired<br>videos across 100 semantic conditions. As a single unified model, VAP sets a<br>new state-of-the-art for open-source methods, achieving a 38.7% user preference<br>rate that rivals leading condition-specific commercial models. VAP's strong<br>zero-shot generalization and support for various downstream applications mark a<br>significant advance toward general-purpose, controllable video generation.</p>
+            <p>Unified, generalizable semantic control in video generation remains a critical open challenge. Existing methods either introduce artifacts by enforcing inappropriate pixel-wise priors from structure-based controls, or rely on non-generalizable, condition-specific finetuning or task-specific architectures. We introduce Video-As-Prompt (VAP), a new paradigm that reframes this problem as in-context generation. VAP leverages a reference video as a direct semantic prompt, guiding a frozen Video Diffusion Transformer (DiT) via a plug-and-play Mixture-of-Transformers (MoT) expert. This architecture prevents catastrophic forgetting and is guided by a temporally biased position embedding that eliminates spurious mapping priors for robust context retrieval. To power this approach and catalyze future research, we built VAP-Data, the largest dataset for semantic-controlled video generation with over 100K paired videos across 100 semantic conditions. As a single unified model, VAP sets a new state-of-the-art for open-source methods, achieving a 38.7% user preference rate that rivals leading condition-specific commercial models. VAP's strong zero-shot generalization and support for various downstream applications mark a significant advance toward general-purpose, controllable video generation.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 统一语义控制难题：在概念、风格、运动、机位等非像素对齐条件下缺乏通用框架，直接迁移结构控制方法会强加像素级映射先验，产生复制/拼贴伪影与语义错配。<br>• 现有方法碎片化与泛化弱：要么按条件微调主干/LoRA（高成本、易遗忘、对未见语义零样本泛化差），要么为特定任务定制模块/推理策略（阻碍统一与扩展）。<br>• 数据与评测缺口：缺少覆盖广泛语义条件的大规模配对数据，限制统一训练与公平对比，难以系统评估用户偏好与跨任务表现。</p>
+                <p>• 核心问题：在非像素对齐条件下缺乏统一、可泛化的语义可控视频生成框架（见第1页摘要、第2页段1）。<br>• 重要性：支撑视觉特效、视频风格化、动作模仿与相机控制等广泛应用场景（见第1页引言）。<br>• 局限1：将结构控制范式直接迁移到语义控制会强加像素对齐先验，出现拷贝/伪影问题（图2(a)，第3页；第1页摘要）。<br>• 局限2：条件特定微调/LoRA需要为每种语义单独训练，成本高、难维护、泛化差（图2(b)，第3页；第4页相关工作）。<br>• 局限3：任务特定模块/推理策略导致方法碎片化，难以统一建模且零样本能力弱（图2(c)，第3页；第4页）。<br>• 局限4：缺少面向语义控制的大规模数据集，限制统一训练与评测（第1页摘要；VAP-Data概览见第5页图3）。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出Video-As-Prompt（VAP）：将含目标语义的参考视频直接作为“视频提示”，在冻结的Video DiT上并联一个可插拔Mixture-of-Transformers专家，通过全注意力进行层级同步引导，实现通用的上下文语义控制。配合时间偏置RoPE（参考序列置于目标序列之前、保持空间位置不变）以去除错误的像素映射先验并强化稳健检索，并构建VAP-Data（10万+配对、100类语义）支撑训练与评测。</p>
+                <p>提出Video-As-Prompt（VAP）：将包含目标语义的参考视频视作“视频提示”，在冻结的Video DiT上并行插入一个可插拔的Mixture-of-Transformers专家，通过层间全注意力实现in-context语义引导并保持主干能力。配合时间偏置的RoPE（参考序列时间上先于目标、空间位置不变）以消除伪像素映射先验，获得稳健的上下文检索与强零样本泛化。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 多专家动态路由的VAP：通过Mixture-of-Transformers的自适应专家选择与稀疏路由，提升跨语义零样本泛化与复杂场景的稳健性。<br>• 面向长时程与跨镜头的时间偏置编码：扩展时间偏置RoPE到长视频与多镜头剪辑，增强全局一致性与语义延续。<br>• 多模态视频即提示生成：将音频/文本/动作传感器等多模态信号与视频提示联合建模，细化时序与语义控制精度。</p>
+                <p>• 多参考-多模态Video-As-Prompt：联合视频/文本/音频/草图等多模态提示的协同语义控制，研究跨模态共注意与调度策略。<br>• 长时程高分辨率VAP：基于稀疏/分块注意与分层位置编码的可扩展生成，实现分钟级与4K级别的稳定语义控制。<br>• 结构-语义一体化控制的VAP：将像素对齐（深度/姿态/光流）与非对齐语义提示统一到单框架，探索动态路由与条件混合策略。</p>
             </div>
         </div>    </div>
     <div class="paper">
-        <h2 class="paper-title">UI-Ins: Enhancing GUI Grounding with Multi-Perspective<br> Instruction-as-Reasoning</h2>
+        <h2 class="paper-title">UI-Ins: Enhancing GUI Grounding with Multi-Perspective Instruction-as-Reasoning</h2>
         
         <div class="paper-links">
             <a href="https://huggingface.co/papers/2510.20286" target="_blank">Open in Hugging Face</a>
@@ -394,31 +394,31 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>GUI grounding, which maps natural-language instructions to actionable UI<br>elements, is a core capability of GUI agents. Prior works largely treats<br>instructions as a static proxy for user intent, overlooking the impact of<br>instruction diversity and quality on grounding performance. Through a careful<br>investigation of existing grounding datasets, we find a 23.3% flaw rate in<br>their instructions and show that inference-time exploitation of instruction<br>diversity yields up to a substantial 76% relative performance improvement. In<br>this paper, we introduce the Instruction-as-Reasoning paradigm, treating<br>instructions as dynamic analytical pathways that offer distinct perspectives<br>and enabling the model to select the most effective pathway during reasoning.<br>To achieve this, we propose a two-stage training framework: supervised<br>fine-tuning (SFT) on synthesized, diverse instructions to instill<br>multi-perspective reasoning, followed by reinforcement learning (RL) to<br>optimize pathway selection and composition. Our resulting models, UI-Ins-7B and<br>UI-Ins-32B, achieve state-of-the-art results on five challenging grounding<br>benchmarks and exhibit emergent reasoning, selectively composing and<br>synthesizing novel instruction pathways at inference. In particular, UI-Ins-32B<br>attains the best grounding accuracy, scoring 87.3% on UI-I2E-Bench, 57.0% on<br>ScreenSpot-Pro, and 84.9% on MMBench-GUI L2. Furthermore, our model<br>demonstrates strong agentic potential, achieving a 74.1% success rate on<br>AndroidWorld using UI-Ins-7B as the executor. Our in-depth analysis reveals<br>additional insights such as how reasoning can be formulated to enhance rather<br>than hinder grounding performance, and how our method mitigates policy collapse<br>in the SFT+RL framework. All code and model checkpoints will be publicly<br>released in https://github.com/alibaba/UI-Ins.</p>
+            <p>GUI grounding, which maps natural-language instructions to actionable UI elements, is a core capability of GUI agents. Prior works largely treats instructions as a static proxy for user intent, overlooking the impact of instruction diversity and quality on grounding performance. Through a careful investigation of existing grounding datasets, we find a 23.3% flaw rate in their instructions and show that inference-time exploitation of instruction diversity yields up to a substantial 76% relative performance improvement. In this paper, we introduce the Instruction-as-Reasoning paradigm, treating instructions as dynamic analytical pathways that offer distinct perspectives and enabling the model to select the most effective pathway during reasoning. To achieve this, we propose a two-stage training framework: supervised fine-tuning (SFT) on synthesized, diverse instructions to instill multi-perspective reasoning, followed by reinforcement learning (RL) to optimize pathway selection and composition. Our resulting models, UI-Ins-7B and UI-Ins-32B, achieve state-of-the-art results on five challenging grounding benchmarks and exhibit emergent reasoning, selectively composing and synthesizing novel instruction pathways at inference. In particular, UI-Ins-32B attains the best grounding accuracy, scoring 87.3% on UI-I2E-Bench, 57.0% on ScreenSpot-Pro, and 84.9% on MMBench-GUI L2. Furthermore, our model demonstrates strong agentic potential, achieving a 74.1% success rate on AndroidWorld using UI-Ins-7B as the executor. Our in-depth analysis reveals additional insights such as how reasoning can be formulated to enhance rather than hinder grounding performance, and how our method mitigates policy collapse in the SFT+RL framework. All code and model checkpoints will be publicly released in https://github.com/alibaba/UI-Ins.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 指令多样性与质量被忽视，直接限制GUI grounding准确率：多数据集约23.3%的指令存在歧义/不匹配等缺陷，清洗后显著增益；仅在推理时换用更合适的视角可带来最高76%的相对提升，说明“视角选择”对性能至关重要（见第3页图2(a)/(b)/(c)）。<br>• 现有方法局限：将指令当作静态输入、单风格SFT映射，缺乏跨视角推理与选择能力；自由式推理（FFR）在RL阶段常导致性能下降；SFT+RL因坐标式监督输出高度同质，探索不足，易发生策略坍塌（见第12页表8/表9）。<br>• 迫切需求：构建能把“指令当作推理路径”的模型，既需高质量、多视角数据，也需稳定的训练范式，使模型在不同GUI场景中自适应选取/合成最优视角，并转化为端到端代理性能（AndroidWorld成功率74.1%，见第10-11页表5）。</p>
+                <p>• 关键问题：现有GUI Grounding将用户指令视为静态输入，忽视“外观/功能/位置/意图”等多视角表达与选择，导致与人类灵活表述不匹配并限制性能上限。<br>• 重要性：指令是从高层意图到低层可执行动作的唯一语义桥梁，选择合适视角可显著提升定位准确率（组合视角上限带来最高76%相对提升，见图2a）。<br>• 数据局限：公开数据集中约23.3%的指令存在歧义或不匹配等质量缺陷，显著拖累训练效果（图2b、2c）。<br>• 算法局限：自由形式推理（FFR）在RL阶段易降分；传统SFT+RL在仅坐标监督下易策略塌缩，探索性不足、泛化差。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出Instruction-as-Reasoning：先通过数据管线清洗标注并用GPT-4.1合成外观/功能/位置/意图四类高质量多视角指令，再以两阶段训练实现“先想后答”。SFT阶段学习生成中间推理并输出坐标，RL阶段用GRPO与point-in-box奖励在开放推理空间中选择/组合最优视角，稳定提升Grounding表现。</p>
+                <p>提出“Instruction-as-Reasoning”：先用数据流水线清洗标注并生成多视角高质量指令，再采用两阶段训练（SFT学习将指令转化为显式推理路径+GRPO强化学习基于点入框奖励自适应选择最优视角），实现可选、可组装、可涌现的多视角推理以提升GUI定位。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 知识增强的GUI Grounding：结合外部知识库/RAG与多视角推理，消解品牌/领域实体等知识缺口导致的定位错误。<br>• 结构与状态感知的多视角推理：引入UI布局图与组件类型/状态建模，扩展视角空间以提升复杂界面与近邻干扰下的鲁棒性。<br>• 自发现视角与策略蒸馏：从GRPO探索中自动挖掘新视角并进行多视角策略蒸馏，减少推理开销同时避免SFT+RL的策略坍塌。</p>
+                <p>• 知识增强的Instruction-as-Reasoning：结合检索/知识库与工具调用，缓解品牌/专业领域识别不足，提升隐式语义指令的对齐能力。<br>• 基于布局图的结构化多视角推理：构建控件层级与邻接关系图，将结构/状态等视角纳入IR，实现对可点击区域与歧义样本的鲁棒消解。<br>• 面向在线交互的时序IR：在多步任务与界面动态变更中学习跨状态的视角选择与组合，增强对UI漂移、渲染延迟与交互反馈的不变性。</p>
             </div>
         </div>    </div></div>
 <div class="page" id="page-2">
 
     <div class="paper">
-        <h2 class="paper-title">From Denoising to Refining: A Corrective Framework for Vision-Language<br> Diffusion Model</h2>
+        <h2 class="paper-title">From Denoising to Refining: A Corrective Framework for Vision-Language Diffusion Model</h2>
         
         <div class="paper-links">
             <a href="https://huggingface.co/papers/2510.19871" target="_blank">Open in Hugging Face</a>
@@ -427,29 +427,29 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>Discrete diffusion models have emerged as a promising direction for<br>vision-language tasks, offering bidirectional context modeling and theoretical<br>parallelization. However, their practical application is severely hindered by a<br>train-inference discrepancy, which leads to catastrophic error cascades:<br>initial token errors during parallel decoding pollute the generation context,<br>triggering a chain reaction of compounding errors and leading to syntactic<br>errors and semantic hallucinations. To address this fundamental challenge, we<br>reframe the generation process from passive denoising to active refining. We<br>introduce ReDiff, a refining-enhanced diffusion framework that teaches the<br>model to identify and correct its own errors. Our approach features a two-stage<br>training process: first, we instill a foundational revision capability by<br>training the model to revise synthetic errors; second, we implement a novel<br>online self-correction loop where the model is explicitly trained to revise its<br>own flawed drafts by learning from an expert's corrections. This mistake-driven<br>learning endows the model with the crucial ability to revisit and refine its<br>already generated output, effectively breaking the error cascade. Extensive<br>experiments demonstrate that ReDiff significantly improves the coherence and<br>factual accuracy of generated content, enabling stable and efficient parallel<br>generation far superior to traditional denoising methods. Our codes and models<br>are available at https://rediff-hku.github.io/.</p>
+            <p>Discrete diffusion models have emerged as a promising direction for vision-language tasks, offering bidirectional context modeling and theoretical parallelization. However, their practical application is severely hindered by a train-inference discrepancy, which leads to catastrophic error cascades: initial token errors during parallel decoding pollute the generation context, triggering a chain reaction of compounding errors and leading to syntactic errors and semantic hallucinations. To address this fundamental challenge, we reframe the generation process from passive denoising to active refining. We introduce ReDiff, a refining-enhanced diffusion framework that teaches the model to identify and correct its own errors. Our approach features a two-stage training process: first, we instill a foundational revision capability by training the model to revise synthetic errors; second, we implement a novel online self-correction loop where the model is explicitly trained to revise its own flawed drafts by learning from an expert's corrections. This mistake-driven learning endows the model with the crucial ability to revisit and refine its already generated output, effectively breaking the error cascade. Extensive experiments demonstrate that ReDiff significantly improves the coherence and factual accuracy of generated content, enabling stable and efficient parallel generation far superior to traditional denoising methods. Our codes and models are available at https://rediff-hku.github.io/.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 离散扩散式VLM在并行解码中存在训练-推理分布不一致，初始少量token错误会污染全局上下文并触发误差级联，导致语法混乱与视觉幻觉，且模型无法回看修正（图1与示例，第2页；第3-4页）<br>• 现有mask-pred方法仅在干净GT上被动去噪，推理阶段把已解码token视为固定条件，缺乏对既有输出的主动修订能力，未充分利用双向注意力的结构潜力（第3页）<br>• 并行化潜力未被兑现：多token/步时质量显著下降，常被迫退化为1 token/步，造成效率与稳定性矛盾（图1(c)第2页；表2-3第7-8页）<br>• 多模态幻觉在扩散并行情景更突出，缺少面向“语法错误/幻觉”两类错误的针对性学习信号与纠错机制（第3-5页）</p>
+                <p>• 并行解码存在训练-推理分布差异：模型训练于干净标注，推理需在自身噪声中间态上生成，导致初始错误迅速污染上下文并触发错误级联（语法混乱与视觉幻觉）。<br>• 现有离散扩散/Mask-Pred方法是“被动去噪”，一旦解掩就将token视为固定条件，缺乏对已生成内容的回访与修订能力，无法在错误发生后纠正。<br>• 并行生成稳定性差：为避免质量崩塌，实际常退化为一步一token解码，未能兑现离散扩散“可并行、高效”的理论优势；AR模型同样受单向误差传播所限。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出ReDiff，将离散扩散从被动去噪转为主动精炼：阶段I以合成语法/幻觉错误进行“基础修订训练”，阶段II构建“在线自纠错闭环”，用模型草稿与外部专家修订对形成定向监督。推理中允许对已生成token迭代替换与精炼，同时并行解码与自我校正以打破误差级联。</p>
+                <p>提出ReDiff，将生成范式从被动去噪转为主动精修，通过两阶段训练赋予模型“识错-改错”能力：阶段I用合成语法噪声与幻觉对训练基础修订能力；阶段II在线自我纠错，收集模型草稿并由专家改写，针对性学习自身特征性错误的修复。推理时同步解掩与重写已生成token，稳定少步并行生成并降低幻觉。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• RefineFlow：无外部专家的自举式在线自纠错离散扩散——以自蒸馏/一致性训练替代大模型专家，降低成本并持续迭代精炼能力<br>• RLAIF-Refine：融合人/AI反馈的强化学习优化并行精炼策略——以奖励驱动动态选择重掩/替换位置与步长，权衡速度与稳定性<br>• Grounded-ReDiff：引入区域级视觉对齐监督抑制多模态幻觉——结合检测/分割/ROI或场景图约束，提升事实一致性与可解释性<br>• 离散扩散并行解码误差级联的理论分析与调度——建立误差传播上界与收敛分析，导出最优token选择与步数调度策略</p>
+                <p>• RefineLM-V: 无专家自举的在线自我纠错离散扩散——以一致性判别器/自监督伪标签替代外部专家，闭环提升精修质量与成本效率<br>• UAR-Schedule: 不确定性感知的自适应精修-解掩调度——基于token置信度与冲突度动态决定“解掩/重写”比例，优化少步并行的稳定性<br>• ReDiff-Video: 面向视频与长时叙事的跨帧精修扩散——将精修循环扩展到时序维度，抑制长上下文中的错误漂移与叙事不一致</p>
             </div>
         </div>    </div>
     <div class="paper">
-        <h2 class="paper-title">RECALL: REpresentation-aligned Catastrophic-forgetting ALLeviation via<br> Hierarchical Model Merging</h2>
+        <h2 class="paper-title">RECALL: REpresentation-aligned Catastrophic-forgetting ALLeviation via Hierarchical Model Merging</h2>
         
         <div class="paper-links">
             <a href="https://huggingface.co/papers/2510.20479" target="_blank">Open in Hugging Face</a>
@@ -458,29 +458,93 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>We unveil that internal representations in large language models (LLMs) serve<br>as reliable proxies of learned knowledge, and propose RECALL, a novel<br>representation-aware model merging framework for continual learning without<br>access to historical data. RECALL computes inter-model similarity from<br>layer-wise hidden representations over clustered typical samples, and performs<br>adaptive, hierarchical parameter fusion to align knowledge across models. This<br>design enables the preservation of domain-general features in shallow layers<br>while allowing task-specific adaptation in deeper layers. Unlike prior methods<br>that require task labels or incur performance trade-offs, RECALL achieves<br>seamless multi-domain integration and strong resistance to catastrophic<br>forgetting. Extensive experiments across five NLP tasks and multiple continual<br>learning scenarios show that RECALL outperforms baselines in both knowledge<br>retention and generalization, providing a scalable and data-free solution for<br>evolving LLMs.</p>
+            <p>We unveil that internal representations in large language models (LLMs) serve as reliable proxies of learned knowledge, and propose RECALL, a novel representation-aware model merging framework for continual learning without access to historical data. RECALL computes inter-model similarity from layer-wise hidden representations over clustered typical samples, and performs adaptive, hierarchical parameter fusion to align knowledge across models. This design enables the preservation of domain-general features in shallow layers while allowing task-specific adaptation in deeper layers. Unlike prior methods that require task labels or incur performance trade-offs, RECALL achieves seamless multi-domain integration and strong resistance to catastrophic forgetting. Extensive experiments across five NLP tasks and multiple continual learning scenarios show that RECALL outperforms baselines in both knowledge retention and generalization, providing a scalable and data-free solution for evolving LLMs.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 大型语言模型在持续/多域学习中易发生灾难性遗忘，难以同时保持原有通用能力与新任务专长<br>• 现有数据重放方法依赖历史样本，受存储与隐私限制；模型约束/结构适配方法优化空间受限、常需任务标识且易增加复杂度与干扰<br>• 无历史数据与无显式任务边界时，难以判断应保留的知识与更新方向；简单权重平均忽视层间功能差异与深层表示分化，易产生语义冲突</p>
+                <p>• 关键问题：大型语言模型在持续/多域微调中出现灾难性遗忘，新任务更新会覆盖已学知识<br>• 现实约束：历史数据因隐私/存储不可得，需数据无依赖且任务无关的知识保留方案<br>• 现有方法局限（数据复现类）：依赖样本回放，难以落地且有隐私与存储成本<br>• 现有方法局限（模型约束/结构类）：优化空间受限、跨任务性能权衡明显、常需任务标识/路由并累积复杂度<br>• 关键挑战：无历史数据与无显式任务边界下，难以判定应保留的知识并以可推广的方式引导更新</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出RECALL：先用KMeans从新任务数据中选取少量“典型样本”，在各模型按层提取表示并以RBF核计算跨模型表示相似度，将相似度softmax成层级合并权重，进行逐层加权参数融合，从而对齐表示、保留浅层通用特征并允许深层任务特化，无需访问历史数据。</p>
+                <p>RECALL提出基于中间表示对齐的分层模型合并：用聚类选取新任务的典型样本，计算各层隐藏表示的RBF相似度并Softmax为层级权重，按层对多模型参数做加权插值以对齐表示。该过程无需历史数据与任务标签，在浅层保留通用特征、深层允许任务特化，从而缓解遗忘并实现多域知识融合。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 跨架构LLM的表示对齐模型融合：面向不同架构/词表/Tokenizer的模型，学习共享对齐空间与适配器，实现异构模型的层级合并<br>• 表示驱动的在线持续学习与自适应样本选择：在流式/任务未知场景下，结合主动与不确定性采样动态选取典型样本，实时更新层级合并权重<br>• 训练-合并协同的终身学习：将表示一致性正则与EWC/LoRA等训练范式联合，形成训练期与合并期协同优化以支持多任务大规模扩展</p>
+                <p>• 异构架构下的表示对齐合并：将RECALL扩展至跨架构/词表不一致模型的无监督融合<br>• 多语言与跨模态的RECALL：在多语种与多模态任务中进行层级表示对齐与知识整合<br>• 在线持续学习的自适应RECALL：基于漂移检测与不确定性动态更新层权重实现流式合并<br>• 学习式相似度与理论保证：端到端学习相似度度量并给出遗忘边界与稳定性分析<br>• 典型样本选择的稳健优化：引入主动采样/合成代理数据，降低对真实数据与聚类质量的敏感性<br>• 可解释的层级路由与子空间合并：联合学习层分组与门控路由，选择性融合或隔离任务子空间</p>
             </div>
         </div>    </div>
     <div class="paper">
-        <h2 class="paper-title">RAPO++: Cross-Stage Prompt Optimization for Text-to-Video Generation via<br> Data Alignment and Test-Time Scaling</h2>
+        <h2 class="paper-title">Map the Flow: Revealing Hidden Pathways of Information in VideoLLMs</h2>
+        
+        <div class="paper-links">
+            <a href="https://huggingface.co/papers/2510.13251" target="_blank">Open in Hugging Face</a>
+            <a href="https://arxiv.org/pdf/2510.13251" target="_blank" class="pdf">Open PDF</a>
+        </div>
+        
+        <div class="abstract">
+            <h3>Abstract</h3>
+            <p>Video Large Language Models (VideoLLMs) extend the capabilities of vision-language models to spatiotemporal inputs, enabling tasks such as video question answering (VideoQA). Despite recent advances in VideoLLMs, their internal mechanisms on where and how they extract and propagate video and textual information remain less explored. In this study, we investigate the internal information flow of VideoLLMs using mechanistic interpretability techniques. Our analysis reveals consistent patterns across diverse VideoQA tasks: (1) temporal reasoning in VideoLLMs initiates with active cross-frame interactions in early-to-middle layers, (2) followed by progressive video-language integration in middle layers. This is facilitated by alignment between video representations and linguistic embeddings containing temporal concepts. (3) Upon completion of this integration, the model is ready to generate correct answers in middle-to-late layers. (4) Based on our analysis, we show that VideoLLMs can retain their VideoQA performance by selecting these effective information pathways while suppressing a substantial amount of attention edges, e.g., 58% in LLaVA-NeXT-7B-Video-FT. These findings provide a blueprint on how VideoLLMs perform temporal reasoning and offer practical insights for improving model interpretability and downstream generalization. Our project page with the source code is available at https://map-the-flow.github.io</p>
+        </div>
+    
+        <div class="analysis-section">
+            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <div class="motivation">
+                <p>• 亟需理解VideoLLMs内部信息流：现有模型在处理时序推理时“在哪里、如何”完成跨帧整合与视频-语言融合仍不清楚，导致可解释性不足与优化难度大。<br>• 现有工作侧重外部设计而忽视内部机制：多集中于数据规模化、关键帧选择、视频token压缩等工程层面，缺乏对跨帧注意力与跨模态路由的因果验证与系统刻画。<br>• 性能与效率的潜在优化空间未被利用：若能识别并保留“有效信息通路”，则有望在抑制大量注意力边的同时保持性能（论文显示可抑制约58%注意力边而精度基本不降），推动高效与稳健推理。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <div class="method">
+                <p>以机制可解释性为主线，结合注意力击穿（Attention Knockout）做因果干预、Logit Lens做层级语义探针与层内概率追踪，系统定位从视频→问题→最后token的关键通路与层段；据此仅保留有效信息路径、关闭其余注意力边，验证通路充足性与对性能的影响。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">💡</span>研究思路</h3>
+            <div class="idea">
+                <p>• Pathway-Aware Pruning for Efficient VideoLLMs：基于识别到的有效信息通路进行动态/静态剪枝与路由，等效保持精度同时大幅降低注意力开销。<br>• Temporal-Keyword Aligned Training for Robust Fusion：在训练中显式强化视频时序表征与问题“时序关键词”嵌入的对齐，提升跨模态融合的稳健性与泛化。<br>• Memory-Enhanced Streaming VideoLLMs via Early Cross-Frame Routing：利用早-中层跨帧交互规律设计长视频/流式记忆模块与路由策略，增强长时依赖与在线理解能力。</p>
+            </div>
+        </div>    </div></div>
+<div class="page" id="page-3">
+
+    <div class="paper">
+        <h2 class="paper-title">Model Merging with Functional Dual Anchors</h2>
+        
+        <div class="paper-links">
+            <a href="https://huggingface.co/papers/2510.21223" target="_blank">Open in Hugging Face</a>
+            <a href="https://arxiv.org/pdf/2510.21223" target="_blank" class="pdf">Open PDF</a>
+        </div>
+        
+        <div class="abstract">
+            <h3>Abstract</h3>
+            <p>Model merging is an efficient post-training strategy for integrating knowledge from multiple finetuned checkpoints of a shared foundation model. Existing methods operate in the parameter space, combining task vectors to mitigate conflicts, but remain constrained by parameter inconsistencies. We propose Functional Dual Anchors (FDAs), a framework that instead models the input-representation space. FDAs are synthetic inputs whose induced gradients align with task vectors, capturing task-specific functional shifts relative to the pretrained model. This perspective bridges joint multi-task training and post-hoc merging, offering both robustness and flexibility. We further introduce a principled initialization scheme and show that FDAs are complementary to parameter-space model merging. Comprehensive experiments demonstrate the effectiveness of FDAs in model merging.</p>
+        </div>
+    
+        <div class="analysis-section">
+            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <div class="motivation">
+                <p>• 关键问题：多任务模型合并时，下游任务的知识以参数形式编码，直接在参数空间相加易产生“任务/参数冲突”，导致互相干扰与性能下降。<br>• 重要性：与多任务联合训练相比，模型合并无需原始数据、成本低、灵活性高，是整合多领域专家模型为统一模型的可行路径。<br>• 现有局限：主流方法在参数空间对“任务向量”做缩放/投影/正交化等调整，对初始化敏感、难以适配非凸损失地形，给出的是从预训练点出发的固定线性路径，易偏离最优损失盆地（图2显示TA会漂移）。<br>• 方法缺口：参数空间结构复杂、冲突难以直接刻画；而输入-表征空间更有结构性、便于建模，且更接近多任务联合训练的知识整合方式。<br>• 需求：一种能在输入-表征空间表达并对齐任务功能迁移的机制，既可独立完成合并，又能与参数空间方法互补提升稳健性与效果。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <div class="method">
+                <p>提出功能双锚（FDAs）：为每个下游检查点合成一组输入锚点，使其在预训练模型上诱导的梯度方向与对应任务向量对齐，从而把任务知识从参数空间投影到输入-表征空间；随后用这些锚点对预训练模型进行对齐训练或对参数合并结果进行细化，配合基于线性模型分析的两种初始化（权重采样与缩放高斯）与分层构建实现高效稳健的合并。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">💡</span>研究思路</h3>
+            <div class="idea">
+                <p>• 跨模态FDAs：在多模态Transformer中统一构建与对齐输入锚点，提升跨模态模型合并效果<br>• 自监督FDAs生成：无需下游权重或标注数据，基于自监督信号与生成建模直接合成功能锚点<br>• FDAs+低秩适配器联合合并：将输入空间锚点与LoRA/Adapter的参数合并解耦协同，缓解冲突并提效<br>• 非线性网络的FDAs理论：在深度非线性条件下建立FDAs收敛性、最优性与鲁棒性的理论上界<br>• 隐私与联邦合并的FDAs：在数据不可见与隐私约束下，用锚点交换实现跨方合并与知识联通<br>• 动态增量合并：面向持续学习的在线FDAs构建与快速合并，抑制遗忘并支持任务热插拔<br>• 锚点形状自动化搜索：自动确定锚点数与token长度等形状超参，面向大模型的计算-性能最优<br>• 用FDAs做多任务蒸馏：以锚点替代真实数据进行跨任务蒸馏，统一表示对齐与参数整合流程</p>
+            </div>
+        </div>    </div>
+    <div class="paper">
+        <h2 class="paper-title">RAPO++: Cross-Stage Prompt Optimization for Text-to-Video Generation via Data Alignment and Test-Time Scaling</h2>
         
         <div class="paper-links">
             <a href="https://huggingface.co/papers/2510.20206" target="_blank">Open in Hugging Face</a>
@@ -489,29 +553,27 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>Prompt design plays a crucial role in text-to-video (T2V) generation, yet<br>user-provided prompts are often short, unstructured, and misaligned with<br>training data, limiting the generative potential of diffusion-based T2V models.<br>We present RAPO++, a cross-stage prompt optimization framework that<br>unifies training-data--aligned refinement, test-time iterative scaling, and<br>large language model (LLM) fine-tuning to substantially improve T2V generation<br>without modifying the underlying generative backbone. In Stage 1,<br>Retrieval-Augmented Prompt Optimization (RAPO) enriches user prompts with<br>semantically relevant modifiers retrieved from a relation graph and refactors<br>them to match training distributions, enhancing compositionality and<br>multi-object fidelity. Stage 2 introduces Sample-Specific Prompt<br>Optimization (SSPO), a closed-loop mechanism that iteratively refines prompts<br>using multi-source feedback -- including semantic alignment, spatial fidelity,<br>temporal coherence, and task-specific signals such as optical flow -- yielding<br>progressively improved video generation quality. Stage 3 leverages<br>optimized prompt pairs from SSPO to fine-tune the rewriter LLM, internalizing<br>task-specific optimization patterns and enabling efficient, high-quality prompt<br>generation even before inference. Extensive experiments across five<br>state-of-the-art T2V models and five benchmarks demonstrate that RAPO++<br>achieves significant gains in semantic alignment, compositional reasoning,<br>temporal stability, and physical plausibility, outperforming existing methods<br>by large margins. Our results highlight RAPO++ as a model-agnostic,<br>cost-efficient, and scalable solution that sets a new standard for prompt<br>optimization in T2V generation. The code is available at<br>https://github.com/Vchitect/RAPO.</p>
+            <p>Prompt design plays a crucial role in text-to-video (T2V) generation, yet user-provided prompts are often short, unstructured, and misaligned with training data, limiting the generative potential of diffusion-based T2V models. We present RAPO++, a cross-stage prompt optimization framework that unifies training-data--aligned refinement, test-time iterative scaling, and large language model (LLM) fine-tuning to substantially improve T2V generation without modifying the underlying generative backbone. In Stage 1, Retrieval-Augmented Prompt Optimization (RAPO) enriches user prompts with semantically relevant modifiers retrieved from a relation graph and refactors them to match training distributions, enhancing compositionality and multi-object fidelity. Stage 2 introduces Sample-Specific Prompt Optimization (SSPO), a closed-loop mechanism that iteratively refines prompts using multi-source feedback -- including semantic alignment, spatial fidelity, temporal coherence, and task-specific signals such as optical flow -- yielding progressively improved video generation quality. Stage 3 leverages optimized prompt pairs from SSPO to fine-tune the rewriter LLM, internalizing task-specific optimization patterns and enabling efficient, high-quality prompt generation even before inference. Extensive experiments across five state-of-the-art T2V models and five benchmarks demonstrate that RAPO++ achieves significant gains in semantic alignment, compositional reasoning, temporal stability, and physical plausibility, outperforming existing methods by large margins. Our results highlight RAPO++ as a model-agnostic, cost-efficient, and scalable solution that sets a new standard for prompt optimization in T2V generation. The code is available at https://github.com/Vchitect/RAPO.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 用户提供的T2V文本提示往往简短、无结构，且与训练数据的风格/长度分布不匹配，限制扩散式视频生成模型的潜力<br>• 现有T2I提示优化方法迁移到视频时对时间一致性（运动平滑、闪烁）与物理合理性提升有限<br>• T2V提示工程多为模型特定，缺少可泛化、可扩展且与训练分布对齐的通用优化策略<br>• 直接用LLM重写容易引入误导信息，导致语义偏移与格式失配，削弱组合性和多物体对齐<br>• 基于RLHF的提示优化需大量生成回放与奖励评估，视频生成成本高、难以在T2V上实际落地<br>• 缺乏在推理时利用多源反馈闭环迭代优化提示的通用框架，难以动态提升单样本生成质量</p>
+                <p>• 用户提示短、无结构且与训练数据分布不一致，限制扩散式T2V模型的生成潜力（第1页摘要，第1-2页引言）<br>• 现有T2I提示优化多聚焦空间美学与描述细化，对视频的时间一致性、运动平滑与物理合理性提升有限（第1-3页）<br>• T2V提示重写多为模型特定、缺乏可泛化策略；直接由LLM扩写易偏离训练分布并误导生成（第2-3页；第4页相关工作）<br>• 基于RLHF的提示优化在T2V上代价高昂且难以进行时序评估，大量生成回放不可承受（第2-3页）</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>RAPO++提出三阶段跨阶段提示优化：阶段1以训练语料构建关系图进行检索增强，并由LLM重构与判别选择，使提示在语义与结构上对齐训练分布；阶段2在推理时进行样本特定的闭环迭代优化，融合VLM验证器与任务信号（如光流、计数）生成反馈，循环改写与平均排名选择；阶段3用阶段2收集的优质提示对重写LLM进行指令微调，将优化模式内化，降低推理成本并增强泛化。其整体为模型无关、无需改动生成器的测试时扩展方案。</p>
+                <p>提出RAPO++三阶段框架（第2页图1）：阶段1以检索增强+句子重构将用户提示对齐到训练分布；阶段2在推理时闭环迭代，以多源验证器（语义、空间、时间、光流等）反馈进行样本级提示优化；阶段3用迭代产出的提示对微调重写LLM，内化优化模式，降低测试开销并提升泛化。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 物理先验注入的SSPO：结合可微物理引擎/仿真器反馈，约束运动与交互的物理一致性<br>• 关系图自进化的RAPO：从弱标注网络视频持续挖掘新场景-修饰词对，进行在线扩展与去噪更新<br>• 跨模态音画共优化的提示编译器：联合优化文本到视频与音频生成的提示，提升语义与节奏对齐</p>
+                <p>• 物理感知的跨模态反馈驱动T2V提示优化：联合光流、深度与接触事件等可学习物理验证器，端到端闭环提升运动与因果一致性<br>• 面向多模型与多数据域的元提示优化器：通过元学习在不同T2V骨干与数据分布间快速自适应，提升跨域可迁移性<br>• 低成本实时SSPO：设计轻量级、多臂赌博式验证与记忆检索策略，在单次或少次采样下实现近似最优的在线提示迭代</p>
             </div>
-        </div>    </div></div>
-<div class="page" id="page-3">
-
+        </div>    </div>
     <div class="paper">
         <h2 class="paper-title">A Definition of AGI</h2>
         
@@ -522,27 +584,29 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>The lack of a concrete definition for Artificial General Intelligence (AGI)<br>obscures the gap between today's specialized AI and human-level cognition. This<br>paper introduces a quantifiable framework to address this, defining AGI as<br>matching the cognitive versatility and proficiency of a well-educated adult. To<br>operationalize this, we ground our methodology in Cattell-Horn-Carroll theory,<br>the most empirically validated model of human cognition. The framework dissects<br>general intelligence into ten core cognitive domains-including reasoning,<br>memory, and perception-and adapts established human psychometric batteries to<br>evaluate AI systems. Application of this framework reveals a highly "jagged"<br>cognitive profile in contemporary models. While proficient in<br>knowledge-intensive domains, current AI systems have critical deficits in<br>foundational cognitive machinery, particularly long-term memory storage. The<br>resulting AGI scores (e.g., GPT-4 at 27%, GPT-5 at 58%) concretely quantify<br>both rapid progress and the substantial gap remaining before AGI.</p>
+            <p>The lack of a concrete definition for Artificial General Intelligence (AGI) obscures the gap between today's specialized AI and human-level cognition. This paper introduces a quantifiable framework to address this, defining AGI as matching the cognitive versatility and proficiency of a well-educated adult. To operationalize this, we ground our methodology in Cattell-Horn-Carroll theory, the most empirically validated model of human cognition. The framework dissects general intelligence into ten core cognitive domains-including reasoning, memory, and perception-and adapts established human psychometric batteries to evaluate AI systems. Application of this framework reveals a highly "jagged" cognitive profile in contemporary models. While proficient in knowledge-intensive domains, current AI systems have critical deficits in foundational cognitive machinery, particularly long-term memory storage. The resulting AGI scores (e.g., GPT-4 at 27%, GPT-5 at 58%) concretely quantify both rapid progress and the substantial gap remaining before AGI.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 缺乏具体、可量化、与人类认知对齐的AGI定义，导致“移动门槛”和讨论混乱；现有评估多以单一基准或经济产出替代，难以衡量“广度+熟练度”的人类水平（见图2第6页）<br>• 现有模型能力呈“锯齿状”，知识/写作/数学强，但在长期记忆存储、视觉/听觉处理、速度等基础能力上存在明显短板，难以支撑通用智能（表1第3页；各分项结果见第10–13页）<br>• 自动化数据集易被训练分布污染，且难以分离底层认知能力；RAG与超长上下文等“能力扭曲”掩盖内在缺陷（如内部检索不准、不会持续学习）（讨论段第13–14页）<br>• 现有框架缺少与人类心理测评体系的一一对应映射，无法量化与“受过良好教育成人”的差距与路径（引言与方法综述，第1–6页）</p>
+                <p>• 关键问题：AGI概念长期模糊、目标不断漂移，缺乏可量化、可复现的定义与衡量标准，导致“距离AGI多远”的讨论与治理决策失焦（见第1–3页导言）。<br>• 重要性：当前模型能力呈“锯齿形”谱系，部分任务超强但在核心认知机械（如长期记忆存储、检索精度、跨模态与速度）上存在致命短板，需要系统化诊断来识别瓶颈与路线图（第13页讨论；第3页表1显示GPT‑4为27%、GPT‑5为57%）。<br>• 现有方法局限：过度依赖狭窄基准或经济指标，易被“能力扭曲”掩盖（用长上下文替代长期记忆、用RAG替代内部检索），且自动化数据集易受训练污染、分布脆弱，难以覆盖认知广度与深度（第13–15页“Capability Contortions”“Contamination”“Solving the Dataset vs. Task”）。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>以CHC（Cattell–Horn–Carroll）人类认知理论为蓝本，将通用智能分解为10个等权重（各10%）的核心认知域，并为每个域设计/改编心理测评式任务（跨文本、视觉、音频），给出标准化“AGI分数”和能力剖面。评估强调广度与鲁棒性，结合人工判分与代表性基准，避免单一数据集过拟合。</p>
+                <p>以CHC人类认知理论为蓝本，将AGI操作化为10个同权重（各10%）的核心认知域及其窄能力，构建跨文本/视觉/音频的人类心理测评式任务电池与阈值，人工可评分并汇总为0–100%的“AGI分”（见第6页图2；第3页表1）。该框架强调多模态广度与检索精度、长期记忆存储等瓶颈能力的直接测量，并可随时替换为当期最佳测试。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 面向AGI的持续与个性化长期记忆：从测评到模块化权重更新——提出可复现实验与基准，探索LoRA/记忆模块实现跨会话的关联、语义与逐字记忆巩固<br>• 从外部检索到内部精检索：降低幻觉的参数化记忆精准度训练与评测——构建无工具的事实提取基准与训练方法，系统评估并优化模型的内在检索精度与置信校准<br>• 跨模态工作记忆与视觉-空间推理一体化评测：面向长视频理解与空间导航的MM-LLM能力刻画——整合长视频问答、空间导航、具身推理任务，研究记忆-注意-规划协同机制</p>
+                <p>• 面向AGI的持续可塑记忆：统一长期存储与个性化的模型–记忆协同训练：设计权重适配与外部记忆混合体，覆盖MS的关联/语义/逐字记忆，并用跨会话延时评测检验长期留存。<br>• 内生检索与校准式拒答：降低幻觉的参数化知识精确访问：构建内生检索与不确定性校准/可验证推理机制，减少对RAG依赖，系统提升MR的检索精度与稳健性。<br>• 多模态空间认知统一基准：视觉推理、长视频理解与导航记忆的联合评测与建模：扩展V与WM（含空间旋转/折叠、ERQA、长视频问答、导航记忆）并提出结构化世界模型与跨模态工作记忆算法。</p>
             </div>
-        </div>    </div>
+        </div>    </div></div>
+<div class="page" id="page-4">
+
     <div class="paper">
         <h2 class="paper-title">Visual Diffusion Models are Geometric Solvers</h2>
         
@@ -553,25 +617,25 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>In this paper we show that visual diffusion models can serve as effective<br>geometric solvers: they can directly reason about geometric problems by working<br>in pixel space. We first demonstrate this on the Inscribed Square Problem, a<br>long-standing problem in geometry that asks whether every Jordan curve contains<br>four points forming a square. We then extend the approach to two other<br>well-known hard geometric problems: the Steiner Tree Problem and the Simple<br>Polygon Problem.<br> Our method treats each problem instance as an image and trains a standard<br>visual diffusion model that transforms Gaussian noise into an image<br>representing a valid approximate solution that closely matches the exact one.<br>The model learns to transform noisy geometric structures into correct<br>configurations, effectively recasting geometric reasoning as image generation.<br> Unlike prior work that necessitates specialized architectures and<br>domain-specific adaptations when applying diffusion to parametric geometric<br>representations, we employ a standard visual diffusion model that operates on<br>the visual representation of the problem. This simplicity highlights a<br>surprising bridge between generative modeling and geometric problem solving.<br>Beyond the specific problems studied here, our results point toward a broader<br>paradigm: operating in image space provides a general and practical framework<br>for approximating notoriously hard problems, and opens the door to tackling a<br>far wider class of challenging geometric tasks.</p>
+            <p>In this paper we show that visual diffusion models can serve as effective geometric solvers: they can directly reason about geometric problems by working in pixel space. We first demonstrate this on the Inscribed Square Problem, a long-standing problem in geometry that asks whether every Jordan curve contains four points forming a square. We then extend the approach to two other well-known hard geometric problems: the Steiner Tree Problem and the Simple Polygon Problem. Our method treats each problem instance as an image and trains a standard visual diffusion model that transforms Gaussian noise into an image representing a valid approximate solution that closely matches the exact one. The model learns to transform noisy geometric structures into correct configurations, effectively recasting geometric reasoning as image generation. Unlike prior work that necessitates specialized architectures and domain-specific adaptations when applying diffusion to parametric geometric representations, we employ a standard visual diffusion model that operates on the visual representation of the problem. This simplicity highlights a surprising bridge between generative modeling and geometric problem solving. Beyond the specific problems studied here, our results point toward a broader paradigm: operating in image space provides a general and practical framework for approximating notoriously hard problems, and opens the door to tackling a far wider class of challenging geometric tasks.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 目标问题：把扩散模型用于几何推理与组合优化，直接在像素空间求解经典而困难的几何问题（内接方形、欧氏Steiner树、最大面积多边形化）<br>• 重要性：这些问题普遍NP难/多解且约束严格，影响通信/PCB布线/基础设施等应用；能产生多样高质量近似解的通用方法具有实践价值<br>• 现有限制：多数扩散求解器依赖图/符号参数化与问题特定架构或技巧，难以跨任务复用；像素域方法也常需复杂采样顺序或可微渲染+逐例优化，通用性与易用性不足<br>• 栅格视角机遇：将几何实例视作图像，训练模型从噪声恢复“解分布”，可自然刻画多解性；同时构造有效解数据通常比对单实例精确求解更容易</p>
+                <p>• 统一几何难题的通用求解框架：论文关注将传统上彼此割裂的几何/组合优化难题（如内接正方形、欧式Steiner树、最大面积多边形化）用“一套模型”解决，避免为每个问题定制专用算法或表示。<br>• 多解与多模态分布难以建模：许多几何问题天然多解（如内接正方形），传统算法很难高效枚举；而已有扩散求解多在图/符号空间进行，需特制离散噪声与架构，迁移性差。<br>• 像素空间能否直接推理：现有像素域方法常依赖差分渲染+随机优化或复杂的分块/顺序采样策略，工程复杂、速度慢、对采样顺序敏感；论文探索用标准视觉扩散直接在像素空间“生成解”，以更简单、可复用的管线开展几何推理。<br>• 重要性与实证价值：目标问题具有代表性与高难度（Steiner树与最大面积多边形化为NP难/NP完全；内接正方形为经典未解猜想的像素近似），统一可扩散范式能带来可多解输出、跨规模泛化与优秀近似质量（如Steiner树平均仅比最优高约0.08%–0.92%，显著优于MST基线）。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>将问题实例渲染为条件图像，训练标准视觉条件扩散模型（U-Net+自注意）从高斯噪声生成“解图像”，再以轻量几何后处理（如顶点吸附、节点/边检测与无交叉校验）提取可行近优解。架构不变，按任务仅更换训练数据与后处理解码器。</p>
+                <p>将问题实例与解都表示为图像，训练一个条件视觉扩散模型（标准U-Net，条件为曲线/点的干净通道）从高斯噪声生成有效近似解像素图，再以轻量后处理将像素结果解析为几何结构（如方形刚性对齐、树的节点/边提取、多边形无交叉与哈密顿环筛选），通过多种随机种子自然获得多样解。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 可微几何约束引导的视觉扩散求解器：在采样中融入无交叉、120°夹角等可微一致性/投影约束，提升可行率与最优性<br>• 从像素到矢量的端到端矢量化扩散：在扩散末端接入可学习的矢量解码头，直接输出参数化曲线/树/多边形以减少栅格误差并支持高分辨率<br>• 统一多任务与三维几何求解的视觉扩散：通过多条件提示与共享骨干，让单模型覆盖更多平面/空间几何问题并扩展到3D曲面与网格</p>
+                <p>• 从视觉扩散到可检验证据：混合扩散-符号几何求解器：以扩散产生候选，再用精确/验证算法（如GeoSteiner/ILP）做投影与可行性证明，给出近最优界。<br>• 多分辨率引导的几何扩散采样加速：设计金字塔条件与早期步长重配、早停准则与几何约束引导，降低采样成本同时保持精度。<br>• 跨维度与跨约束的视觉扩散几何推理：扩展到3D与非欧几何（曲面Steiner网、测地多边形化），并用统一软约束/能量引导实现零/小样本迁移。</p>
             </div>
         </div>    </div>
     <div class="paper">
@@ -584,58 +648,25 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>We tackle the challenge of generating the infinitely extendable 3D world --<br>large, continuous environments with coherent geometry and realistic appearance.<br>Existing methods face key challenges: 2D-lifting approaches suffer from<br>geometric and appearance inconsistencies across views, 3D implicit<br>representations are hard to scale up, and current 3D foundation models are<br>mostly object-centric, limiting their applicability to scene-level generation.<br>Our key insight is leveraging strong generation priors from pre-trained 3D<br>models for structured scene block generation. To this end, we propose<br>WorldGrow, a hierarchical framework for unbounded 3D scene synthesis. Our<br>method features three core components: (1) a data curation pipeline that<br>extracts high-quality scene blocks for training, making the 3D structured<br>latent representations suitable for scene generation; (2) a 3D block inpainting<br>mechanism that enables context-aware scene extension; and (3) a coarse-to-fine<br>generation strategy that ensures both global layout plausibility and local<br>geometric/textural fidelity. Evaluated on the large-scale 3D-FRONT dataset,<br>WorldGrow achieves SOTA performance in geometry reconstruction, while uniquely<br>supporting infinite scene generation with photorealistic and structurally<br>consistent outputs. These results highlight its capability for constructing<br>large-scale virtual environments and potential for building future world<br>models.</p>
+            <p>We tackle the challenge of generating the infinitely extendable 3D world -- large, continuous environments with coherent geometry and realistic appearance. Existing methods face key challenges: 2D-lifting approaches suffer from geometric and appearance inconsistencies across views, 3D implicit representations are hard to scale up, and current 3D foundation models are mostly object-centric, limiting their applicability to scene-level generation. Our key insight is leveraging strong generation priors from pre-trained 3D models for structured scene block generation. To this end, we propose WorldGrow, a hierarchical framework for unbounded 3D scene synthesis. Our method features three core components: (1) a data curation pipeline that extracts high-quality scene blocks for training, making the 3D structured latent representations suitable for scene generation; (2) a 3D block inpainting mechanism that enables context-aware scene extension; and (3) a coarse-to-fine generation strategy that ensures both global layout plausibility and local geometric/textural fidelity. Evaluated on the large-scale 3D-FRONT dataset, WorldGrow achieves SOTA performance in geometry reconstruction, while uniquely supporting infinite scene generation with photorealistic and structurally consistent outputs. These results highlight its capability for constructing large-scale virtual environments and potential for building future world models.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 关键问题：如何生成可无限扩展的3D世界，同时保持全局几何结构连贯与局部外观逼真。<br>• 重要性：支撑游戏、VR/AR、CAD与影视制作，更是构建World Models与具身智能开放式学习的基础环境。<br>• 现有方法局限：2D生成→3D提升方法缺乏整体3D理解，易出现跨视角几何与纹理不一致，难以扩展；直接3D生成受场景级数据规模与表示能力限制，多为物体级模型不适用于场景；现有无界场景方法多仅生成几何、纹理依赖外部贴图或训练自由度方案导致视角一致性差与质量随扩展衰减。</p>
+                <p>• 目标问题：生成“可无限扩展”的3D世界，要求跨大范围保持几何连续性与真实外观；这对游戏/VR/影视、CAD，以及支撑世界模型与具身智能至关重要（见论文第1页摘要与第2页引言）。<br>• 现有不足（2D→3D抬升）：依赖2D扩散的多视图或视频外推缺乏全局3D理解，易出现几何误差与跨视角外观不一致，规模变大时失真明显，且往往仅对生成时的视角保持质量（第2页）。<br>• 现有不足（3D生成/隐式表示）：直接3D预测方法受限于场景级数据规模与多样性，常仅生成几何、纹理需额外管线，难以保证跨块外观一致；强大的3D基础模型多为“物体中心”，难以直接用于场景与无界扩展（第2–3页）。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出WorldGrow：一种基于块的无界3D场景生成框架，依托数据切片与双尺度（粗/细）块训练、场景友好SLAT表征（遮挡感知特征聚合+场景块重训解码器）与三维块修复（结构与潜特征两阶段流匹配）。其采用带重叠的逐块扩展，先用粗结构铺设全局布局，再以细结构与潜变量细化几何与外观，最终解码为可渲染的连续大规模3D世界。</p>
+                <p>提出WorldGrow：一种基于块状上下文修复与生长的层次化无限3D场景生成框架。核心包括高质量场景块数据与粗/细双数据策略、场景友好SLAT（遮挡感知特征聚合+场景块解码器重训），以及“结构→外观”的两阶段Flow Transformer 3D块补全与重叠式块间扩展，实现先全局布局、后细节精化的连续生成。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• WorldGrow-3D-Z：面向多层建筑与地形的垂直可扩展无限3D世界生成——引入Z轴块生长与跨层上下文约束。<br>• Semantics-in-the-Loop WorldGrow：融合LLM布局约束的可控无界场景生成——按房型/功能区与风格指令生成可编辑世界。<br>• UniLat-World：几何-外观统一潜空间的单阶段无界场景生成——提升效率并降低多阶段误差传播。<br>• SeamlessGrow：跨块边界一致性与长程稳定性的学习式对齐——显式接缝约束与循环一致性抑制远距离漂移。<br>• SceneBench++：大规模户外/混合域无界场景数据集与评测基准——引入航拍、街景与程序资产以提升多域泛化。</p>
-            </div>
-        </div>    </div></div>
-<div class="page" id="page-4">
-
-    <div class="paper">
-        <h2 class="paper-title">Model Merging with Functional Dual Anchors</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.21223" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.21223" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>Model merging is an efficient post-training strategy for integrating<br>knowledge from multiple finetuned checkpoints of a shared foundation model.<br>Existing methods operate in the parameter space, combining task vectors to<br>mitigate conflicts, but remain constrained by parameter inconsistencies. We<br>propose Functional Dual Anchors (FDAs), a framework that instead models the<br>input-representation space. FDAs are synthetic inputs whose induced gradients<br>align with task vectors, capturing task-specific functional shifts relative to<br>the pretrained model. This perspective bridges joint multi-task training and<br>post-hoc merging, offering both robustness and flexibility. We further<br>introduce a principled initialization scheme and show that FDAs are<br>complementary to parameter-space model merging. Comprehensive experiments<br>demonstrate the effectiveness of FDAs in model merging.</p>
-        </div>
-    
-        <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
-            <div class="motivation">
-                <p>• 关键问题：多任务模型合并主要在参数空间中通过任务向量加权叠加，易出现任务间知识冲突与初始化敏感，难以稳定整合多领域能力。<br>• 重要性：相较多任务联合训练，后验合并无需重训、成本低，但若合并质量不佳会显著偏离真实损失盆地，无法在实际系统中可靠复用与部署（见论文图2的损失景观对比）。<br>• 现有方法局限：大量方法仅建模参数空间（幅值/相似度/正交/子空间或少量数据先验），对起点敏感、对不同任务漂移鲁棒性差，难以复现联合训练的功能性迁移；任务向量提供的是从θ0出发的固定线性路径，易偏离最优收敛轨迹。</p>
-            </div>
-        </div>
-        <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
-            <div class="method">
-                <p>提出功能双锚（FDAs）：为每个下游模型合成一组输入，使其在预训练模型处诱导的梯度方向与对应任务向量对齐；先通过梯度匹配在输入-表示空间构造FDAs，再用它们对预训练或参数合并后的模型进行表示对齐优化，从而模拟多任务联合训练，并可与TA/TSV/WUDI等参数法互补。</p>
-            </div>
-        </div>
-        <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
-            <div class="idea">
-                <p>• Adaptive Functional Dual Anchors for Robust Post-hoc Merging：引入不确定性与损失地形感知的自适应FDA构造与选择，提升跨任务鲁棒性<br>• Beyond Linear Theory: Convergence and Generalization of Input-space Merging in Transformers：建立非线性/层级化网络下FDA收敛与泛化的理论<br>• Federated and Continual Model Merging via FDAs：将FDAs扩展至联邦/持续学习场景，实现无原始数据的稳定增量合并与遗忘抑制</p>
+                <p>• WorldGrow-Z: 面向多层建筑的垂直可扩展3D世界生成：将块状生长从XY平面拓展到Z轴，研究跨楼层/层间连接的一致性建模与多尺度上下文融合。<br>• Sem-Grow: 语义可控的块级无限场景生成：引入LLM/文本约束与布局先验，实现对房间类型、功能区连接与风格的可控生成与可编辑扩展。<br>• UniGrow: 几何-外观统一潜变量的单阶段无限3D世界生成：将WorldGrow与几何-外观统一潜空间结合，探索单阶段高效生成以提升细节保真与跨块外观一致性。</p>
             </div>
         </div>    </div>
     <div class="paper">
@@ -648,29 +679,31 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>Scaling the context length of large language models (LLMs) offers significant<br>benefits but is computationally expensive. This expense stems primarily from<br>the self-attention mechanism, whose O(N^2) complexity with respect to<br>sequence length presents a major bottleneck for both memory and latency.<br>Fortunately, the attention matrix is often sparse, particularly for long<br>sequences, suggesting an opportunity for optimization. Block-sparse attention<br>has emerged as a promising solution that partitions sequences into blocks and<br>skips computation for a subset of these blocks. However, the effectiveness of<br>this method is highly dependent on the underlying attention patterns, which can<br>lead to sub-optimal block-level sparsity. For instance, important key tokens<br>for queries within a single block may be scattered across numerous other<br>blocks, leading to computational redundancy. In this work, we propose Permuted<br>Block-Sparse Attention (PBS-Attn), a plug-and-play method that<br>leverages the permutation properties of attention to increase block-level<br>sparsity and enhance the computational efficiency of LLM prefilling. We conduct<br>comprehensive experiments on challenging real-world long-context datasets,<br>demonstrating that PBS-Attn consistently outperforms existing block-sparse<br>attention methods in model accuracy and closely matches the full attention<br>baseline. Powered by our custom permuted-FlashAttention kernels, PBS-Attn<br>achieves an end-to-end speedup of up to 2.75times in long-context<br>prefilling, confirming its practical viability. Code available at<br>https://github.com/xinghaow99/pbs-attn</p>
+            <p>Scaling the context length of large language models (LLMs) offers significant benefits but is computationally expensive. This expense stems primarily from the self-attention mechanism, whose O(N^2) complexity with respect to sequence length presents a major bottleneck for both memory and latency. Fortunately, the attention matrix is often sparse, particularly for long sequences, suggesting an opportunity for optimization. Block-sparse attention has emerged as a promising solution that partitions sequences into blocks and skips computation for a subset of these blocks. However, the effectiveness of this method is highly dependent on the underlying attention patterns, which can lead to sub-optimal block-level sparsity. For instance, important key tokens for queries within a single block may be scattered across numerous other blocks, leading to computational redundancy. In this work, we propose Permuted Block-Sparse Attention (PBS-Attn), a plug-and-play method that leverages the permutation properties of attention to increase block-level sparsity and enhance the computational efficiency of LLM prefilling. We conduct comprehensive experiments on challenging real-world long-context datasets, demonstrating that PBS-Attn consistently outperforms existing block-sparse attention methods in model accuracy and closely matches the full attention baseline. Powered by our custom permuted-FlashAttention kernels, PBS-Attn achieves an end-to-end speedup of up to 2.75times in long-context prefilling, confirming its practical viability. Code available at https://github.com/xinghaow99/pbs-attn</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 长上下文LLM的自注意力在序列长度上呈O(N^2)复杂度，prefill阶段的计算与显存/延迟成为主要瓶颈。<br>• 现有块稀疏注意力依赖固定块掩码；当重要key在全局分散（典型“竖线”模式）时，单个query块需访问大量key块，导致块级稀疏性差、冗余计算与注意力覆盖不足。<br>• FlashAttention主要缓解I/O与内存占用而非计算量；直接对全序列做全局置换虽可能提高稀疏性，但会破坏因果结构，缺乏既保因果又能优化块级稀疏性的重排机制。<br>• 现有方法未系统利用注意力对键值置换不变、对查询置换等变的性质来在不改变输出的前提下重排token以提升块级稀疏度。</p>
+                <p>• 关键问题：长上下文LLM在prefill阶段的自注意力计算与内存开销随序列长度呈O(N^2)增长，成为吞吐与延迟瓶颈；而长序列应用（代码库、法律长文、视频等）对可扩展上下文尤为依赖。<br>• 现有局限：FlashAttention等主要缓解I/O与显存但不改变计算量阶；块稀疏注意力依赖预设块掩码与注意模式，当单一查询块的重要键token分散在大量键块时，会引入冗余计算与次优块级稀疏性。<br>• 因果性约束：LLM使用因果掩码（下三角结构），全局置换虽可重排注意模式，但会破坏因果结构并导致块密度升至接近全密；需要既能重排又不破坏因果性的策略（见第3页图1的分段置换思想）。<br>• 模式挑战：“竖线”关键token需被覆盖，但其分散会迫使掩码选择更多块，降低稀疏性；亟需在不损失注意覆盖率前提下将关键键token聚类（第4页图2显示：置换前块密度82.50%、覆盖率91.73%；置换后块密度降至32.31%、覆盖率升至96.44%）。<br>• 实用动机：希望以即插即用方式提升块级稀疏、加速prefill且接近全注意力精度；论文基于定制permuted-FlashAttention核在真实长上下文数据集上实现最高2.75×端到端加速，并在LongBench/LongBenchv2上精度接近全注意力。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出PBS-Attn：先对序列做“分段内置换”（段间顺序不变以保持因果，段内对Q与K/V独立重排），并用末块查询估计的段内key重要度进行排序以聚集“竖线”key；在置换后的布局上构造稀疏块掩码并执行块稀疏FlashAttention，最后对输出做逆置换以恢复原顺序。</p>
+                <p>提出Permuted Block-Sparse Attention（PBS-Attn）：利用注意力对查询/键值置换的等变与不变性，进行“分段置换”（段内可重排、段间保持因果）并配合“查询感知的键置换”（用最后查询块估计键重要性并段内排序）以聚集关键token，随后在置换序列上生成块稀疏掩码，用定制的permuted-FlashAttention核计算并在输出端逆置换恢复。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 学习型分段置换用于因果LLM：端到端学习段划分与段内/跨头置换策略，实现最优稀疏-精度权衡<br>• 面向流式Prefill的在线置换与KV缓存一致性：动态重要度估计与跨chunk持续置换，保持因果与缓存高效协同<br>• 面向多头与交叉注意的置换感知稀疏范式：按头/跨模态的置换与掩码联合设计，推广到交叉注意与多模态长上下文</p>
+                <p>• 学习式分段置换与块掩码联合优化：以端到端或强化学习方式学习段内置换与块选择策略，兼顾跨层/跨头一致性与稳定性。<br>• 在线解码与流式推理的动态PBS-Attn：将PBS从prefill扩展到自回归阶段，引入KV缓存感知的在线置换与增量更新机制，最小化重排序开销。<br>• 硬件协同的PBS-Attn核与调度自动化：面向GPU/TPU/NPU进行块大小、并行度与访存调度的联合搜索与编译优化，提升端到端加速比与能效。</p>
             </div>
-        </div>    </div>
+        </div>    </div></div>
+<div class="page" id="page-5">
+
     <div class="paper">
-        <h2 class="paper-title">AstaBench: Rigorous Benchmarking of AI Agents with a Scientific Research<br> Suite</h2>
+        <h2 class="paper-title">AstaBench: Rigorous Benchmarking of AI Agents with a Scientific Research Suite</h2>
         
         <div class="paper-links">
             <a href="https://huggingface.co/papers/2510.21652" target="_blank">Open in Hugging Face</a>
@@ -679,31 +712,29 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>AI agents hold the potential to revolutionize scientific productivity by<br>automating literature reviews, replicating experiments, analyzing data, and<br>even proposing new directions of inquiry; indeed, there are now many such<br>agents, ranging from general-purpose "deep research" systems to specialized<br>science-specific agents, such as AI Scientist and AIGS. Rigorous evaluation of<br>these agents is critical for progress. Yet existing benchmarks fall short on<br>several fronts: they (1) fail to provide holistic, product-informed measures of<br>real-world use cases such as science research; (2) lack reproducible agent<br>tools necessary for a controlled comparison of core agentic capabilities; (3)<br>do not account for confounding variables such as model cost and tool access;<br>(4) do not provide standardized interfaces for quick agent prototyping and<br>evaluation; and (5) lack comprehensive baseline agents necessary to identify<br>true advances. In response, we define principles and tooling for more<br>rigorously benchmarking agents. Using these, we present AstaBench, a suite that<br>provides the first holistic measure of agentic ability to perform scientific<br>research, comprising 2400+ problems spanning the entire scientific discovery<br>process and multiple scientific domains, and including many problems inspired<br>by actual user requests to deployed Asta agents. Our suite comes with the first<br>scientific research environment with production-grade search tools that enable<br>controlled, reproducible evaluation, better accounting for confounders.<br>Alongside, we provide a comprehensive suite of nine science-optimized classes<br>of Asta agents and numerous baselines. Our extensive evaluation of 57 agents<br>across 22 agent classes reveals several interesting findings, most importantly<br>that despite meaningful progress on certain individual aspects, AI remains far<br>from solving the challenge of science research assistance.</p>
+            <p>AI agents hold the potential to revolutionize scientific productivity by automating literature reviews, replicating experiments, analyzing data, and even proposing new directions of inquiry; indeed, there are now many such agents, ranging from general-purpose "deep research" systems to specialized science-specific agents, such as AI Scientist and AIGS. Rigorous evaluation of these agents is critical for progress. Yet existing benchmarks fall short on several fronts: they (1) fail to provide holistic, product-informed measures of real-world use cases such as science research; (2) lack reproducible agent tools necessary for a controlled comparison of core agentic capabilities; (3) do not account for confounding variables such as model cost and tool access; (4) do not provide standardized interfaces for quick agent prototyping and evaluation; and (5) lack comprehensive baseline agents necessary to identify true advances. In response, we define principles and tooling for more rigorously benchmarking agents. Using these, we present AstaBench, a suite that provides the first holistic measure of agentic ability to perform scientific research, comprising 2400+ problems spanning the entire scientific discovery process and multiple scientific domains, and including many problems inspired by actual user requests to deployed Asta agents. Our suite comes with the first scientific research environment with production-grade search tools that enable controlled, reproducible evaluation, better accounting for confounders. Alongside, we provide a comprehensive suite of nine science-optimized classes of Asta agents and numerous baselines. Our extensive evaluation of 57 agents across 22 agent classes reveals several interesting findings, most importantly that despite meaningful progress on certain individual aspects, AI remains far from solving the challenge of science research assistance.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 科学AI代理遍地开花但缺少可比性强的整体评测，难以判断谁更适合真实科研场景（图1与表1，第3页）<br>• 现有基准多与真实产品需求脱节，缺少来自实际用户问题的任务设计，外推价值弱（表1，第3页）<br>• 缺乏标准、可复现实验环境与工具，尤其缺少可控的大规模文献检索，比较结果易受信息通道差异干扰（第6页）<br>• 未系统控制混杂因素（推理成本、工具权限、开放性等），容易“用更多算力换分数”，难以公平对比（第6-7页）<br>• 任务接口不统一、与代理框架耦合，通用代理集成成本高、复现性差（第2-3页）<br>• 缺少覆盖广泛架构的标准化基线代理，难以识别真正方法学进步（表1与第7页）</p>
+                <p>• 科学代理评测缺乏“面向真实使用”的整体性基准，难以覆盖完整科研流程（从检索、理解、编程到端到端发现）并反映真实用户需求。<br>• 缺少标准、可复现实验环境与工具，尤其是大规模、可控的文献检索与受控代码执行，导致系统间比较不公平、不可复核。<br>• 现有评测未充分控制混杂因素（如计算成本、工具访问与开放性），容易通过“烧钱提分”，无法公平衡量方法本身的能力与性价比。<br>• 任务接口与格式不统一，通用代理难以快速接入评测，复现性差、对新架构的开发与比较造成阻碍。<br>• 基线与对照不足，覆盖的代理类别有限，难以识别真实技术进步并形成清晰的行业基准。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出AstaBench：包含覆盖文献理解、代码执行、数据分析到端到端发现的11项科学研究基准，并配套Asta Environment（可按日期裁剪的语料检索工具与沙盒计算笔记本）、agent-eval计费与排行榜，统一在Inspect/MCP标准接口下运行。从工具与成本两端控因，辅以发布9类Asta优化代理与多基线（agent-baselines），实现可控、可复现、成本可比的端到端评测。</p>
+                <p>提出AstaBench整体基准与配套生态：涵盖11项子基准（文献理解、代码与执行、数据分析、端到端发现），配套Asta Environment标准工具（含带日期截断的生产级文献检索与沙箱笔记本）、agent-eval工具包（时间不变的成本核算与受控排行榜）以及agent-baselines标准代理套件与统一接口，实现受控、公平、可复现的科学代理评测。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 成本—性能帕累托最优的科学代理策略学习：在受控工具与统一计费下，学习跨任务自适应推理/重试/投票策略<br>• 面向长时程科研项目的多阶段代理编排与记忆：提升计划分解、跨会话记忆与失败重规划能力<br>• 科学评测中的LLM-as-Judge一致性与校准：构建多裁判集成与偏差校准方法，提升发现类任务判分可靠性<br>• 污染鲁棒的最新科学知识基准构建：基于日期裁剪与证据可追溯，系统生成训练外/时序外任务<br>• 可控检索对RAG代理因果影响评估：在标准化语料与接口下分离“信息可达性”与“模型能力”的贡献</p>
+                <p>• 面向真实科研的防污染评测基准3.0：基于日期截断与增量发布，构建跨时间可比、跨领域（如生物医学）扩展的任务集与指标。<br>• 科学任务LLM裁判的可靠性与证据绑定：引入多裁判、多维Rubric与可复核证据，提升端到端发现等开放式任务的评分稳定性与一致性。<br>• 开放权重科学代理的长时程编排与恢复：面向代码执行与数据分析，设计可扩展规划、失败检测与恢复机制，并训练更强的开放模型与工具链。</p>
             </div>
-        </div>    </div></div>
-<div class="page" id="page-5">
-
+        </div>    </div>
     <div class="paper">
-        <h2 class="paper-title">PhysWorld: From Real Videos to World Models of Deformable Objects via<br> Physics-Aware Demonstration Synthesis</h2>
+        <h2 class="paper-title">PhysWorld: From Real Videos to World Models of Deformable Objects via Physics-Aware Demonstration Synthesis</h2>
         
         <div class="paper-links">
             <a href="https://huggingface.co/papers/2510.21447" target="_blank">Open in Hugging Face</a>
@@ -712,29 +743,62 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>Interactive world models that simulate object dynamics are crucial for<br>robotics, VR, and AR. However, it remains a significant challenge to learn<br>physics-consistent dynamics models from limited real-world video data,<br>especially for deformable objects with spatially-varying physical properties.<br>To overcome the challenge of data scarcity, we propose PhysWorld, a novel<br>framework that utilizes a simulator to synthesize physically plausible and<br>diverse demonstrations to learn efficient world models. Specifically, we first<br>construct a physics-consistent digital twin within MPM simulator via<br>constitutive model selection and global-to-local optimization of physical<br>properties. Subsequently, we apply part-aware perturbations to the physical<br>properties and generate various motion patterns for the digital twin,<br>synthesizing extensive and diverse demonstrations. Finally, using these<br>demonstrations, we train a lightweight GNN-based world model that is embedded<br>with physical properties. The real video can be used to further refine the<br>physical properties. PhysWorld achieves accurate and fast future predictions<br>for various deformable objects, and also generalizes well to novel<br>interactions. Experiments show that PhysWorld has competitive performance while<br>enabling inference speeds 47 times faster than the recent state-of-the-art<br>method, i.e., PhysTwin.</p>
+            <p>Interactive world models that simulate object dynamics are crucial for robotics, VR, and AR. However, it remains a significant challenge to learn physics-consistent dynamics models from limited real-world video data, especially for deformable objects with spatially-varying physical properties. To overcome the challenge of data scarcity, we propose PhysWorld, a novel framework that utilizes a simulator to synthesize physically plausible and diverse demonstrations to learn efficient world models. Specifically, we first construct a physics-consistent digital twin within MPM simulator via constitutive model selection and global-to-local optimization of physical properties. Subsequently, we apply part-aware perturbations to the physical properties and generate various motion patterns for the digital twin, synthesizing extensive and diverse demonstrations. Finally, using these demonstrations, we train a lightweight GNN-based world model that is embedded with physical properties. The real video can be used to further refine the physical properties. PhysWorld achieves accurate and fast future predictions for various deformable objects, and also generalizes well to novel interactions. Experiments show that PhysWorld has competitive performance while enabling inference speeds 47 times faster than the recent state-of-the-art method, i.e., PhysTwin.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 关键问题：如何从短时长、稀缺的真实交互视频中学习既准确又高效的可形变物体世界模型，用于机器人、VR/AR的实时预测与规划（见第1页-第2页）。<br>• 重要性：可形变物体广泛存在于实际操作场景，要求模型既物理一致又能实时推理；高保真模拟器虽准确但难以满足实时性，纯学习方法虽快但依赖大量数据且与真实物理存在域间差距（第2页）。<br>• 现有方法局限：<br> - 学习方法需要大量粒子/网格/点云数据，模拟数据常与现实不一致，且难适配空间非均匀物性（第2页）。<br> - 物理模拟方法（如Mass-Spring/MPM）虽逼真但推理慢，难用于实时（第2-3页）。<br> - 代表性工作AdaptiGraph使用全局物性、数据合成欠物理一致，PhysTwin基于弹簧-质点且推理慢；难处理空间异质物性与多样交互（第2页、第7页表1显示其FPS=17，本文GNN达799，快约47×）。<br>• 数据瓶颈：单条真实视频提供的轨迹单一，直接训练GNN易过拟合与分布外退化（第6页、表6）。</p>
+                <p>• 短视频条件下很难同时获得“高精度+实时”的可变形体世界模型，限制了机器人、VR/AR的预测与规划能力。<br>• 纯学习方法虽高效，但严重依赖大量数据；仿真数据常与真实物理不一致、真实数据采集昂贵，且多采用全局物性无法刻画空间异质性，导致泛化弱。<br>• 物理仿真方法（如MPM/MSS）物理可信但计算昂贵、难以实时，且与真实世界存在域差；从短视频稳定识别本构与物性也具挑战。<br>• 单一真实交互轨迹的观测导致运动模式与接触多样性不足，训练出的模型易过拟合、长时滚动预测误差累积。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>先用MPM构建“数字孪生”：借助VLM自动选择本构模型，并以“全局到局部”的可微物性优化对齐真实视频；再通过曲率受限Bezier轨迹与三段式速度（VMP-Gen）和基于部件语义的协方差扰动（P3-Pert）合成多样物理一致演示，用于训练嵌入空间异质物性的轻量GNN，并用真实视频对GNN中的物性再微调，最终实现快速、准确、可泛化的动作条件预测（第3-6页，图1，第7页表1）。</p>
+                <p>PhysWorld先在MPM中构建物理一致的数字孪生：用VLM自动选择本构模型，并以全局→局部优化摩擦、密度、杨氏模量等物性；再通过Bezier轨迹与三段速度的VMP-Gen及部件感知的P3-Pert合成多样交互，用其训练嵌入空间异质物性的轻量GNN世界模型，并用真实视频微调物性以缩小sim-to-real差距。该模型在保持精度的同时实现实时推理，相比PhysTwin推理提速约47×。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 概率化PhysWorld：不确定性感知的物性估计与GNN世界模型——以贝叶斯物性与分布式扰动提升长时预测鲁棒性与泛化<br>• 在线自适应的模拟器→GNN蒸馏：闭环主动交互与信息增益驱动的演示合成，持续缩小仿真-现实域间差距用于实时机器人规划<br>• 面向复杂拓扑与多体接触的PhysWorld：支持断裂/粘弹/流固耦合与多物体/工具交互的本构选择与局部物性识别，提升通用性</p>
+                <p>• 自监督可微本构选择与不确定性物性估计：端到端联合学习本构类别与空间异质物性，引入不确定性建模提升鲁棒性与可解释性。<br>• PhysWorld++：面向多体接触与跨介质耦合的统一世界模型：扩展至多物体/工具交互及布-流体/颗粒耦合，结合分层GNN与接触图学习。<br>• 闭环在线自适应的规划-感知-物理共优化：将MPPI/RL与世界模型耦合，在实际操作中在线更新物性与模型，实现安全约束的实时操控。</p>
             </div>
         </div>    </div>
     <div class="paper">
-        <h2 class="paper-title">ARC-Encoder: learning compressed text representations for large language<br> models</h2>
+        <h2 class="paper-title">Are Large Reasoning Models Good Translation Evaluators? Analysis and Performance Boost</h2>
+        
+        <div class="paper-links">
+            <a href="https://huggingface.co/papers/2510.20780" target="_blank">Open in Hugging Face</a>
+            <a href="https://arxiv.org/pdf/2510.20780" target="_blank" class="pdf">Open PDF</a>
+        </div>
+        
+        <div class="abstract">
+            <h3>Abstract</h3>
+            <p>Recent advancements in large reasoning models (LRMs) have introduced an intermediate "thinking" process prior to generating final answers, improving their reasoning capabilities on complex downstream tasks. However, the potential of LRMs as evaluators for machine translation (MT) quality remains underexplored. We provides the first systematic analysis of LRM-as-a-judge in MT evaluation. We identify key challenges, revealing LRMs require tailored evaluation materials, tend to "overthink" simpler instances and have issues with scoring mechanisms leading to overestimation. To address these, we propose to calibrate LRM thinking by training them on synthetic, human-like thinking trajectories. Our experiments on WMT24 Metrics benchmarks demonstrate that this approach largely reduces thinking budgets by ~35x while concurrently improving evaluation performance across different LRM scales from 7B to 32B (e.g., R1-Distill-Qwen-7B achieves a +8.7 correlation point improvement). These findings highlight the potential of efficiently calibrated LRMs to advance fine-grained automatic MT evaluation.</p>
+        </div>
+    
+        <div class="analysis-section">
+            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <div class="motivation">
+                <p>• 研究空白：虽然LLM-as-a-judge在MT评估上表现强，但缺少对“大型推理模型（LRM）作为评审”的系统性研究，尚不清楚其与人类评审一致性与局限。<br>• 任务本质：MT质量评估更像需要“系统2”思考的细粒度推理（MQM错误标注→加权扣分），现有端到端/相似度型指标难以透明地复现人类过程。<br>• 材料敏感：评估输入材料（源文/参考/联合）对结果影响大且与模型规模相关；小模型更依赖参考，大模型更受益于源文，现有“一刀切”方案不适配。<br>• 评分机制缺陷：多阶段（模型输出→辅助打分器）导致归因不清与系统性过高估计；辅助模型可能掩盖LRM真实能力，且分数分布偏离人类。<br>• 效率问题：LRM“过度思考”简单样本，思考预算与难度/规模不匹配，增大成本却未稳定提升一致性，甚至部分场景弱于对应LLM。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <div class="method">
+                <p>提出ThinMQM：基于MQM规范合成“人类式评估轨迹”（错误标注→按严格扣分规则计算），对LRM进行后训练，使其在一次生成中统一完成标注与打分，校准思考过程与分数分布。在WMT24上以约35倍更低思考预算获得更高人类相关性（如7B模型+8.7点）。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">💡</span>研究思路</h3>
+            <div class="idea">
+                <p>• ThinMQM++：基于难度与不确定性的自适应思考预算分配——学习控制器按样本难度动态分配推理token/轮次，进一步缓解过度思考并优化效能。<br>• RefAware-ThinMQM：参考质量感知与材料自选择的LRM评审——联合估计参考质量并自适配选择源基/参照/联合评估路径，缓解“参考不无辜”带来的偏差。<br>• MQM-XAlign：面向细粒度错误类型的一致性对齐——针对“Minor/准确性-误译”类易错点进行目标化对齐与多任务学习，优化类型判定与扣分标度的一致性。</p>
+            </div>
+        </div>    </div></div>
+<div class="page" id="page-6">
+
+    <div class="paper">
+        <h2 class="paper-title">ARC-Encoder: learning compressed text representations for large language models</h2>
         
         <div class="paper-links">
             <a href="https://huggingface.co/papers/2510.20535" target="_blank">Open in Hugging Face</a>
@@ -743,60 +807,27 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>Recent techniques such as retrieval-augmented generation or chain-of-thought<br>reasoning have led to longer contexts and increased inference costs. Context<br>compression techniques can reduce these costs, but the most effective<br>approaches require fine-tuning the target model or even modifying its<br>architecture. This can degrade its general abilities when not used for this<br>specific purpose. Here we explore an alternative approach: an encoder that<br>compresses the context into continuous representations which replace token<br>embeddings in decoder LLMs. First, we perform a systematic study of training<br>strategies and architecture choices for the encoder. Our findings led to the<br>design of an Adaptable text Representations Compressor, named ARC-Encoder,<br>which outputs x-times fewer continuous representations (typically<br>x!in!{4,8}) than text tokens. We evaluate ARC-Encoder across a variety<br>of LLM usage scenarios, ranging from in-context learning to context window<br>extension, on both instruct and base decoders. Results show that ARC-Encoder<br>achieves state-of-the-art performance on several benchmarks while improving<br>computational efficiency at inference. Finally, we demonstrate that our models<br>can be adapted to multiple decoders simultaneously, allowing a single encoder<br>to generalize across different decoder LLMs. This makes ARC-Encoder a flexible<br>and efficient solution for portable encoders that work seamlessly with multiple<br>LLMs. We release a training code at https://github.com/kyutai-labs/ARC-Encoder<br>, fine-tuning dataset and pretrained models are available at<br>https://huggingface.co/collections/kyutai/arc-encoders-68ee18787301407d60a57047 .</p>
+            <p>Recent techniques such as retrieval-augmented generation or chain-of-thought reasoning have led to longer contexts and increased inference costs. Context compression techniques can reduce these costs, but the most effective approaches require fine-tuning the target model or even modifying its architecture. This can degrade its general abilities when not used for this specific purpose. Here we explore an alternative approach: an encoder that compresses the context into continuous representations which replace token embeddings in decoder LLMs. First, we perform a systematic study of training strategies and architecture choices for the encoder. Our findings led to the design of an Adaptable text Representations Compressor, named ARC-Encoder, which outputs x-times fewer continuous representations (typically x!in!{4,8}) than text tokens. We evaluate ARC-Encoder across a variety of LLM usage scenarios, ranging from in-context learning to context window extension, on both instruct and base decoders. Results show that ARC-Encoder achieves state-of-the-art performance on several benchmarks while improving computational efficiency at inference. Finally, we demonstrate that our models can be adapted to multiple decoders simultaneously, allowing a single encoder to generalize across different decoder LLMs. This makes ARC-Encoder a flexible and efficient solution for portable encoders that work seamlessly with multiple LLMs. We release a training code at https://github.com/kyutai-labs/ARC-Encoder , fine-tuning dataset and pretrained models are available at https://huggingface.co/collections/kyutai/arc-encoders-68ee18787301407d60a57047 .</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 关键问题：LLM在RAG/CoT等场景下需要处理更长上下文，导致注意力计算呈平方复杂度、推理成本激增，且信息被稀释或超过上下文窗口限制而损伤能力（第1–2页）<br>• 现有局限：硬压缩（删词/摘要）虽模型无关但压缩率有限、语义流失；软压缩（gist/memory tokens）虽压缩率高，但通常需改造或微调解码器，破坏通用性与可移植性（第1–2页）<br>• 固定记忆token数量难以适配不同长度输入，难以在各种序列规模上保持稳定压缩比；需要一种按固定压缩因子对任意长度序列稳定压缩的方法（第3页）<br>• 目标需求：在不修改解码器的前提下，以连续表示替代原始文本token，保持少样本ICL能力与任务泛化，同时可灵活设定4×/8×等压缩比，并支持多解码器复用（摘要、第1页）<br>• 效率与可落地性：需兼顾推理加速与可预计算存储。论文显示4×压缩在prefill阶段约1.8×加速且性能接近原文上下文（表1，第6页；附录B.1），并能通过量化/PQ将全维基压缩表示存储到≈80GB/20GB量级（图4，第9页）</p>
+                <p>• 长上下文与RAG/CoT导致推理成本激增与窗口受限：Transformer注意力随长度近二次增长，信息被长上下文稀释，甚至触顶窗口造成性能退化（见第1页-第2页）。<br>• 现有硬压缩可解释但压缩率有限且易丢关键信息；软压缩通常需微调/改造解码器，破坏通用性与可插拔性，且记忆/gist固定长度难适配不同输入（第2页）。<br>• 需要在不改动解码器的前提下，以固定压缩因子直接缩短序列，同时保持Few-shot/ICL评测一致性与实用性（第3-4页）。<br>• 工程与系统层面诉求：一套编码器可跨多解码器复用、可并行分块扩展长上下文、可预计算并以接近原文体量存储表示（图4，第7-9页；多解码器训练第6-7页）。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出ARC-Encoder：使用去因果的LLM编码器在自注意力最后一层仅对查询Q做分组平均池化（固定池化因子），保留K/V不变，产出更少的连续表示，并经两层线性MLP投影到目标解码器隐藏维，直接替换其输入嵌入，解码器完全冻结（见图1，第3页）。训练采用“重构+续写”交替预训练与任务微调，配合解码器特定的小型投影头实现多解码器适配，并通过并行分块压缩实现长上下文扩展。</p>
+                <p>提出ARC-Encoder：在编码器最后一层自注意力中对相邻query做平均池化以实现固定压缩因子，并用一个含瓶颈的两层MLP将压缩表示对齐到解码器隐空间，保持解码器完全冻结；通过“重建+续写”交替预训练与少样本式微调，使压缩后的连续表示可直接替换原始token嵌入，且支持共享编码器+小型投影器的多解码器适配与并行分块的长上下文扩展。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 跨家族通用潜空间的ARC-Encoder：基于对比/对齐学习训练解码器无关的共享表示，再以极小头适配多种解码器，提升可移植性与零样本迁移<br>• 内容与任务自适应的注意力池化压缩：学习式重要性引导的动态池化因子与层位点选择，联合稀疏注意与可解释信号实现按需压缩<br>• 并行分块长文压缩中的跨块一致性与检索融合：融合跨块指代/主题一致性建模与检索信号，提升32k+长文问答与摘要的全局推理能力</p>
+                <p>• 自适应池化ARC：基于任务与上下文长度的动态压缩因子与分层池化策略学习——兼顾性能与效率<br>• 跨解码器统一对齐：最小化投影器+对比式对齐损失的多模型联合训练，实现零/少量参数的新解码器快速适配<br>• 可预计算RAG库：ARC连续表示的量化索引与端到端检索管线，研究存储-精度-吞吐的Pareto前沿</p>
             </div>
         </div>    </div>
-    <div class="paper">
-        <h2 class="paper-title">Document Understanding, Measurement, and Manipulation Using Category<br> Theory</h2>
-        
-        <div class="paper-links">
-            <a href="https://huggingface.co/papers/2510.21553" target="_blank">Open in Hugging Face</a>
-            <a href="https://arxiv.org/pdf/2510.21553" target="_blank" class="pdf">Open PDF</a>
-        </div>
-        
-        <div class="abstract">
-            <h3>Abstract</h3>
-            <p>We apply category theory to extract multimodal document structure which leads<br>us to develop information theoretic measures, content summarization and<br>extension, and self-supervised improvement of large pretrained models. We first<br>develop a mathematical representation of a document as a category of<br>question-answer pairs. Second, we develop an orthogonalization procedure to<br>divide the information contained in one or more documents into non-overlapping<br>pieces. The structures extracted in the first and second steps lead us to<br>develop methods to measure and enumerate the information contained in a<br>document. We also build on those steps to develop new summarization techniques,<br>as well as to develop a solution to a new problem viz. exegesis resulting in an<br>extension of the original document. Our question-answer pair methodology<br>enables a novel rate distortion analysis of summarization techniques. We<br>implement our techniques using large pretrained models, and we propose a<br>multimodal extension of our overall mathematical framework. Finally, we develop<br>a novel self-supervised method using RLVR to improve large pretrained models<br>using consistency constraints such as composability and closure under certain<br>operations that stem naturally from our category theoretic framework.</p>
-        </div>
-    
-        <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
-            <div class="motivation">
-                <p>• 关键问题：缺乏对文档“语义层”的可操作数学表示，现有工作多停留在香农式符号统计或经验型NLP管线，难以在统一框架中度量、比较与操控语义信息（图2的正交QA有向无环图示例见第8页；多模态总体框架见第18页图5）。<br>• 重要性：需要对文档进行系统的测量（信息量、熵、互信息、信息增益等）与变换（摘要与“释经式”扩展），以支撑检索、对齐、生成和知识融合等关键应用，但目前缺乏闭合于操作的结构与度量（第9-11页引入“摘要/释经”对偶与格结构）。<br>• 现有方法局限：摘要多为启发式或黑箱，不具可组合性与封闭性，难以进行率失真分析；跨文档相似度多依赖向量相似，缺少基于可回答问题集合的精细对齐；修辞结构解析受限于抽取式或传统RST工具，难以与信息度量联动；模型改进常依赖人类反馈，缺乏可验证、可自动化的自监督约束（第13页提出用范畴约束做RLVR）。<br>• 多模态挑战：如何将高层语义与低层证据（图像/音频/视频/传感）在统一结构中对齐并度量一致性，现有框架普遍缺少可证明的融合机制（第14-15页、多模态扩展与概率范畴）。<br>• 理论空缺：缺乏对“语义压缩”的率失真曲线与下界分析，以及对信息熵/密度在语义空间的可加性、冗余性与可估计性研究（第14页图3为操作性率失真曲线示例；第12-13页提出内容熵与链结构）。</p>
-            </div>
-        </div>
-        <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
-            <div class="method">
-                <p>将文档表示为由问题-答案对等价类构成的范畴，定义基于可回答问题集合的Jaccard式距离，并通过LLM驱动的分解与正交化获得原子QA集合及其与修辞结构的映射，进而构造格来实现摘要（压缩）与释经（扩展），并在该结构上定义信息度量与率失真分析；同时把范畴可组合性与闭包等性质转化为RLVR可验证奖励，用于自监督提升大模型一致性。</p>
-            </div>
-        </div>
-        <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
-            <div class="idea">
-                <p>• 摘要的率失真理论：文档语义压缩的下界、上界与可实现算法——建立R(D)理论、构造最优/次优摘要策略并给出实验曲线（参照第14页图3）。<br>• 基于范畴约束的RLVR自监督学习：从可组合性与闭包到一致性提升——系统生成可验证约束，检验对LLM推理稳定性与对齐性能的改进（第13页）。<br>• 多模态范畴与Sheaf一致性的释经扩展：跨文档融合与矛盾检测——以Sheaf一致性保证扩展的全局协调，在图文音视频证据下实现可证明的一致性与冲突定位（第14-16页、18页图5）。</p>
-            </div>
-        </div>    </div></div>
-<div class="page" id="page-6">
-
     <div class="paper">
         <h2 class="paper-title">Taming Modality Entanglement in Continual Audio-Visual Segmentation</h2>
         
@@ -807,25 +838,56 @@
         
         <div class="abstract">
             <h3>Abstract</h3>
-            <p>Recently, significant progress has been made in multi-modal continual<br>learning, aiming to learn new tasks sequentially in multi-modal settings while<br>preserving performance on previously learned ones. However, existing methods<br>mainly focus on coarse-grained tasks, with limitations in addressing modality<br>entanglement in fine-grained continual learning settings. To bridge this gap,<br>we introduce a novel Continual Audio-Visual Segmentation (CAVS) task, aiming to<br>continuously segment new classes guided by audio. Through comprehensive<br>analysis, two critical challenges are identified: 1) multi-modal semantic<br>drift, where a sounding objects is labeled as background in sequential tasks;<br>2) co-occurrence confusion, where frequent co-occurring classes tend to be<br>confused. In this work, a Collision-based Multi-modal Rehearsal (CMR) framework<br>is designed to address these challenges. Specifically, for multi-modal semantic<br>drift, a Multi-modal Sample Selection (MSS) strategy is proposed to select<br>samples with high modal consistency for rehearsal. Meanwhile, for co-occurence<br>confusion, a Collision-based Sample Rehearsal (CSR) mechanism is designed,<br>allowing for the increase of rehearsal sample frequency of those confusable<br>classes during training process. Moreover, we construct three audio-visual<br>incremental scenarios to verify effectiveness of our method. Comprehensive<br>experiments demonstrate that our method significantly outperforms single-modal<br>continual learning methods.</p>
+            <p>Recently, significant progress has been made in multi-modal continual learning, aiming to learn new tasks sequentially in multi-modal settings while preserving performance on previously learned ones. However, existing methods mainly focus on coarse-grained tasks, with limitations in addressing modality entanglement in fine-grained continual learning settings. To bridge this gap, we introduce a novel Continual Audio-Visual Segmentation (CAVS) task, aiming to continuously segment new classes guided by audio. Through comprehensive analysis, two critical challenges are identified: 1) multi-modal semantic drift, where a sounding objects is labeled as background in sequential tasks; 2) co-occurrence confusion, where frequent co-occurring classes tend to be confused. In this work, a Collision-based Multi-modal Rehearsal (CMR) framework is designed to address these challenges. Specifically, for multi-modal semantic drift, a Multi-modal Sample Selection (MSS) strategy is proposed to select samples with high modal consistency for rehearsal. Meanwhile, for co-occurence confusion, a Collision-based Sample Rehearsal (CSR) mechanism is designed, allowing for the increase of rehearsal sample frequency of those confusable classes during training process. Moreover, we construct three audio-visual incremental scenarios to verify effectiveness of our method. Comprehensive experiments demonstrate that our method significantly outperforms single-modal continual learning methods.</p>
         </div>
     
         <div class="analysis-section">
             <h3><span class="emoji">🎯</span>研究动机</h3>
             <div class="motivation">
-                <p>• 研究问题：首次将音频-视觉分割（AVS）拓展到持续学习场景，提出持续音频-视觉分割（CAVS），要求在顺序任务中实现像素级分割并保持已学类不遗忘。<br>• 重要性：真实应用（如具身智能、环境感知）需要以全局音频线索精确引导局部视觉像素，且在数据流中不断引入新类而不丢失旧类知识。<br>• 现有方法局限1：单模态持续语义分割方法直接迁移到多模态时难以维护跨模态语义一致性，易发生灾难性遗忘。<br>• 现有方法局限2：已有多模态持续学习多聚焦于分类/分离等粗粒度任务，缺乏像素级细粒度建模；而静态AVS方法不适用于持续学习设置。<br>• 核心挑战1：多模态语义漂移——旧类在后续任务被标为背景，导致音/视错误对齐（如“鼓-背景”），加剧跨模态知识遗忘。<br>• 核心挑战2：共现混淆——高频共现类别（如“吉他-人”）在学习新类后相互误判，模态纠缠增强，影响旧类保持。<br>• 复习难点：在受限内存下，传统样本复习若未筛除“漂移样本”，会恶化对齐；实例复习（如EIR）难保证音频与视觉内容对齐，复习质量欠佳。</p>
+                <p>• 细粒度多模态持续学习缺位：现有多模态持续学习多停留在分类/分离等粗粒度任务，缺乏对像素级音视对齐的持续分割研究（CAVS）<br>• 多模态语义漂移：旧类在后续任务被标注为背景，导致音频与视觉错误对齐（如“鼓-背景”），加剧灾难性遗忘<br>• 共现混淆（模态纠缠）：高频共现类别在跨模态特征空间彼此靠近，学新类后旧类易被混淆（如“吉他-女人”）<br>• 现有方法局限：单模态CISS无法处理跨模态一致性；多模态CL多为粗粒度约束；AVS静态方法难以直接用于持续场景；常规回放在多模态下易引入错配音频，适得其反</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">🔧</span>研究方法</h3>
             <div class="method">
-                <p>提出碰撞驱动的多模态复习框架CMR：通过多模态样本选择（MSS）以mIoU增益Δ筛选跨模态一致性高的样本入库缓解语义漂移；并以基于碰撞的样本复习（CSR）统计旧模型与当前真值的“碰撞”频次，按类重采样记忆以强化易混类别复习，降低共现混淆与遗忘。</p>
+                <p>提出碰撞驱动的多模态回放（CMR）：先以多模态样本选择（MSS）选取跨模态一致性高的样本入库，再以碰撞式样本回放（CSR）依据旧模型与现标签的“碰撞频率”自适应提高易混类别的重放权重，从而同时缓解语义漂移与共现混淆。</p>
             </div>
         </div>
         <div class="analysis-section">
             <h3><span class="emoji">💡</span>研究思路</h3>
             <div class="idea">
-                <p>• 跨目标解耦的多目标持续音视分割：将多目标样本切分为伪单目标片段以提升复习质量与去纠缠能力<br>• 生成对齐驱动的无样本持续音视分割：用条件生成模型合成语义对齐的音频-视频对进行伪复习以突破内存限制<br>• 开放词汇持续音视分割与语言先验对齐：引入文本/语言先验与类别扩展以实现未知类增量与跨模态对齐统一</p>
+                <p>• 生成式对齐回放用于持续音视频分割：以跨模态一致性约束的扩散/生成模型合成对齐回放，减少存储并提升样本多样性<br>• 实例级解耦重放的多目标持续AVS：将多目标片段解构为单目标轨迹与掩码进行回放，弱化目标间模态纠缠<br>• 无监督跨模态一致性估计的样本选择：不用额外单模态模型，基于互信息/一致性正则的代理指标替代MSS提升可扩展性</p>
+            </div>
+        </div>    </div>
+    <div class="paper">
+        <h2 class="paper-title">Document Understanding, Measurement, and Manipulation Using Category Theory</h2>
+        
+        <div class="paper-links">
+            <a href="https://huggingface.co/papers/2510.21553" target="_blank">Open in Hugging Face</a>
+            <a href="https://arxiv.org/pdf/2510.21553" target="_blank" class="pdf">Open PDF</a>
+        </div>
+        
+        <div class="abstract">
+            <h3>Abstract</h3>
+            <p>We apply category theory to extract multimodal document structure which leads us to develop information theoretic measures, content summarization and extension, and self-supervised improvement of large pretrained models. We first develop a mathematical representation of a document as a category of question-answer pairs. Second, we develop an orthogonalization procedure to divide the information contained in one or more documents into non-overlapping pieces. The structures extracted in the first and second steps lead us to develop methods to measure and enumerate the information contained in a document. We also build on those steps to develop new summarization techniques, as well as to develop a solution to a new problem viz. exegesis resulting in an extension of the original document. Our question-answer pair methodology enables a novel rate distortion analysis of summarization techniques. We implement our techniques using large pretrained models, and we propose a multimodal extension of our overall mathematical framework. Finally, we develop a novel self-supervised method using RLVR to improve large pretrained models using consistency constraints such as composability and closure under certain operations that stem naturally from our category theoretic framework.</p>
+        </div>
+    
+        <div class="analysis-section">
+            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <div class="motivation">
+                <p>• 语义层面的文档结构缺乏形式化表示与可操作性；现有方法多为提取式/启发式，难以进行系统性的分解、组合与操控。<br>• 传统信息论停留在符号统计层面，缺少对“语义单元”的离散化与度量，无法定义语义距离、互信息、信息增益等指标用于文档比较与检索。<br>• 摘要方法缺乏结构闭包与一致性约束，难以进行可比的速率-失真分析；同时缺少对“释经式”内容扩展（Exegesis）的系统建模。<br>• 跨文档/多模态对齐与合并没有统一的高层语义框架，难以评估与保证如“指挥官意图—地面行动”等复杂对齐任务的正确性。<br>• 大模型后训练依赖人工偏好信号，欠缺可验证的自监督约束（组合性、封闭性）来提升一致性与可控性。<br>• 缺少对文档信息量、密度与冗余（链式结构）的客观测度，难以量化质量、对比改写与指导写作。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <div class="method">
+                <p>论文将文档离散化为“问答对范畴”：先由大模型抽取修辞结构形成抽象DAG，再把断言转为QA并用Jaccard式度量与迭代分解进行正交化，得到原子QA与其格结构以支持摘要（抑制）与释经（扩展）。据此定义信息量/熵/互信息/增益与速率-失真分析，并用范畴约束生成可验证奖励，结合RLVR实现大模型的自监督改进，可自然扩展到多模态与概率化。</p>
+            </div>
+        </div>
+        <div class="analysis-section">
+            <h3><span class="emoji">💡</span>研究思路</h3>
+            <div class="idea">
+                <p>• 基于问答范畴的多模态语义对齐与检索：把图像/音频/视频证据挂接到修辞DAG，评估跨模态一致性与可解释检索。<br>• 面向摘要的速率–失真最优化与学习型编码器：以原子QA格为码本，学习在给定速率下最小化语义失真的方法。<br>• 概率化问答范畴与不确定性传播：为QA与态射赋予概率，研究推理一致性、熵与置信度的传播规律。<br>• 文档合并与对齐的范畴映射与正交化策略：最小冲突地融合多文档类别，最大化互信息并量化信息增益。<br>• 释经驱动的任务迁移学习与知识扩展：用格与范畴构造从任务T1到T2的系统性增删改与证据链生长。<br>• 基于范畴一致性约束的RLVR自监督训练：自动生成可验证的组合性/闭包约束，提升大模型的结构化推理能力。<br>• 基于链熵与信息密度的写作质量评估：用链头计数与密度度量冗余与覆盖，构建写作指导与反馈系统。<br>• Sheaf视角的跨文档一致性与矛盾检测：用（预）层与拼接条件刻画局部–全局一致，量化跨源冲突与可合成性。</p>
             </div>
         </div>    </div></div>
 
@@ -841,7 +903,7 @@
         </div>
         
         <div class="footer">
-            <p>Generated on 2025-10-27 04:01:31 | Powered by GPT-5 Analysis</p>
+            <p>Generated on 2025-10-27 04:21:43 | Powered by GPT-5 Analysis</p>
         </div>
     </div>
 
