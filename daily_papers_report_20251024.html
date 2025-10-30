@@ -12,7 +12,7 @@
         }
         
         body {
-            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            font-family: "Times New Roman", Times, serif;
             line-height: 1.7;
             color: #2c3e50;
             background-color: #f8f9fa;
@@ -336,19 +336,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文旨在将学术论文自动转化为高质量的交互式项目网页，减少研究者在网页搭建上的重复劳动并提升传播效率。现有自动化工作多聚焦于固定版式的海报/幻灯片/视频，难以满足网页的可滚动布局、交互元素与风格多样性需求（见第1页摘要与第2页对比图1）。端到端大模型直接“纸到页”常出现版式不合理、事实漂移与缺少人类校对的问题（第2页），因此需要一个可控、分阶段并可插入人类反馈的系统。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者提出AutoPage，一个分层的多智能体协作框架，采用“粗到细”的三阶段流水线：叙事规划→多模态内容生成→交互式页面渲染（图2，第4页）。其关键包括：基于MinerU/Docling的Paper Parser构建资产库与结构化markdown；Page Content Planner生成页面大纲；“文本先行”的内容与图表配对生成；并由Content Checker和HTML Checker在每阶段进行校验，必要时引入人类反馈微调（第3–5页）。在渲染端，通过带语义标签的模板匹配与HTML/CSS/JS生成，保证交互与美观；此外构建PageBench基准，含1500+页语料、100篇测试集与87个模板库，并设计内容质量与视觉质量一套评测指标（第5–6页、表1第6页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>方法层面可深化模板检索与风格自适应，结合用户偏好建模或RLHF，实现更细粒度的审美与交互个性化；并扩展更丰富的交互部件（折叠区、可视化、在线Demo接入）。可靠性上可引入检索增强与多源对照（论文PDF、补充材料、代码/数据仓库）以进一步抑制幻觉、改进公式与表格解析鲁棒性，并研究跨文档一致性检查。评测上可扩展PageBench到跨领域/多语言，并增加任务化可用性测试与纵向A/B线上指标。系统层面探索端到端工具增强代理与可插拔人类审稿工作流，兼顾隐私、安全与复现性。</p>
             </div>
@@ -367,19 +367,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注加速大模型推理的Speculative Decoding（SD），其关键在于小草稿模型与大目标模型的对齐度（接受率α）。现有做法多用知识蒸馏最小化全体token上的KL散度，但这与SD真正目标（最大化被接受的token比例）不一致，且会浪费小模型有限容量在难以拟合、最终也难被接受的“硬”token上，导致对齐不足与收敛不稳。为此，作者提出面向SD的选择性蒸馏，让小模型集中学习更易对齐、对接受率贡献更大的token，从而在不牺牲质量的前提下提升推理效率。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>AdaSPEC采用两阶段选择性蒸馏：先用目标模型对草稿模型的拷贝训练出参考模型（forward KL），再以参考模型为“过滤器”在token级别计算∆L(w)=Ldraft−Lref，选取∆L较大的前k比例token进行有选择的蒸馏训练（见第4页图1）。直觉上，这些token对小模型更“可学”、更能带来与目标模型的一致性提升。关键贡献包括：将“接受率最大化”显式纳入蒸馏目标的选择性过滤机制；容量感知的token级训练配方；在同/异模型家族、不同任务和规模下的通用性与易集成性（代码百行级别、可嵌入EAGLE等先进SD框架）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可进一步研究自适应/动态过滤：按样本、步数或不确定度自调k与阈值，或结合校验置信度、对比学习与不确定性估计改进选择策略。方法层面可与树形/多步验证的SD（如EAGLE、动态草稿树）深度融合，或探索在线/持续学习与多任务蒸馏，缓解遗忘并提升跨域泛化。目标函数上可研究分布重加权、序列级与接受率一致的代理损失，以及多教师/互蒸馏以进一步提高对齐。工程上可面向更大规模与更极端尺寸差、异构tokenizer与多语言场景扩展，并系统评估质量-速度-成本的Pareto前沿与鲁棒性。</p>
             </div>
@@ -398,19 +398,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文要解决“视频推理缺乏可验证证据”的问题：多数方法只输出文字化推理，无法标注关键证据出现的时间与空间位置（第1–2页，图1）。这对视频尤为重要，因为视频涉及跨时间与空间的动态事件，缺乏可定位证据会削弱可靠性与可解释性。现有数据多为单一维度监督（要么只有时间段，要么只有图像框），缺少统一的时空监督与推理链，训练上还存在时间不准导致空间奖励稀疏、出现“空间塌缩”等问题（第2–3页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者提出Open-o3 Video：单模型、非代理框架，直接在答案旁生成显式的时空证据（时间戳、目标类别与边界框），实现“以帧思考”（第2页图1， 第5页图3）。方法采用两阶段训练：先用STGR-CoT-30k冷启动SFT学习结构化的时空链式推理，再用GSPO进行RL，奖励同时约束答案正确性、时间对齐与空间精度，并加入格式奖励（第5–7页，式(1)–(4)）。为缓解时间-空间耦合带来的奖励稀疏，设计“自适应时间近邻”（逐步收紧σ）与“时间门控”（仅在时间足够准时计算空间IoU），保证稠密且可靠的反馈（第6–7页）。同时构建两套数据集STGR-CoT-30k与STGR-RL-36k，含5.9k高质量新标注样本，通过Gemini 2.5 Pro自动标注、框过滤与一致性校验获得统一时空监督与推理链（第4页图2，第5页§3.2）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>面向更长、更复杂视频与小目标场景，结合多尺度感知与更丰富的高质量时空数据，提升鲁棒时空定位能力（第17页A.7）。融合语音与音频，统一文本-时间-空间-音频的多模态对齐，强化事件理解与因果推理（第10页结论、 第17页A.7）。在训练上探索更细粒度的时空一致性奖励与多步/因果链条奖励，或与工具/代理式策略结合以处理超长视频与复杂任务。推理阶段可继续扩展基于证据的自验证与加权投票、跨样本一致性，以及弱/自监督的时空标注生成，以降低人工成本并提升泛化。</p>
             </div>
@@ -431,19 +431,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>本文针对文本生成视频在“多镜头叙事”上的能力缺口：现有强大的T2V模型多生成单段（单镜头）短视频，难以在多个镜头之间保持人物、场景与风格的一致性，也难以按镜头粒度精确执行导演指令（如镜头切换、景别变化）。分阶段或解耦式方法（按段生成或先关键帧后补帧）易产生误差累积与一致性漂移，即使加入角色/场景约束也难根治。整体式（holistic）联合建模虽能提升全局一致性，但存在两大痛点：逐镜头指令被“稀释”、自注意力随长度二次方增长导致分钟级生成不可承受。解决这一问题对从“片段合成”走向自动电影创作至关重要（图1，第1页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>论文提出HoloCine：在单次扩散过程中“整体式”同时建模整场多镜头视频，并配合两项关键注意力机制实现“可导演、可扩展”的长序列生成。其一，窗口交叉注意力（Window Cross-Attention）将第i个镜头的视觉查询仅对齐到“全局描述+该镜头描述”，避免指令被整段文本稀释，支持清晰的镜头切换控制（式(1)，图2与第5页）。其二，稀疏跨镜头自注意力（Sparse Inter-Shot Self-Attention）在镜头内保持稠密注意力以保证运动与时序连续；跨镜头仅与由少量“摘要token”（如首帧）构成的全局缓存交互，将复杂度降为近线性于镜头数（式(2)，第5页），从而可行地生成分钟级视频（图2，第4页）。配套方面，作者构建了40万多镜头样本的数据集，采用“全局+逐镜头”分层文本标注（含[shot cut]标记，利用Gemini 2.5生成），并在Wan2.2-DiT基础上训练，结合FSDP+上下文并行与FlashAttention-3 varlen优化实际效率（第4–5页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>面向因果一致性与物理合理性，可引入世界模型/物理先验、可微仿真或跨镜头状态约束，提升“动作—结果”的连贯性（图8，第10页）。在跨镜头通信上，可探索可学习的摘要token、动态路由或显式记忆库/检索机制，替代固定“首帧摘要”，以更稳健地传递角色与场景长期信息。为增强导演控制，可扩展至更丰富的转场（溶解、匹配剪辑等）、节奏与镜头组接法则，并结合LLM的剧本—分镜—对话多模态协同，实现可编辑与可回溯的电影级创作流程。数据与评测方面，可扩大多镜头语料、加入镜头语言与连贯性细标注，完善如SCA的转场评测与身份一致性检测，推动分钟级乃至多场景长片生成的标准化基准。</p>
             </div>
@@ -462,19 +462,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>作者指出离散扩散模型存在“采样墙”问题：一旦进行类别采样，富含不确定性与候选关系的分布信息坍缩为one-hot，无法跨步传播，导致后续步骤在信息不足的状态下反复“从零预测”。这引发两类低效现象：无进展的空转步骤与过度振荡（见第5页图3与第9页对TKL/TPE的讨论）。尽管离散扩散具备并行解码和全局上下文的优势，其生成质量仍落后于自回归方法，现有工作难以保留并利用步间的分布信息。论文动机是跨越采样墙，把被丢弃的分布/上下文连续表征带入后续去噪步骤，从而提升质量与稳定性。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>论文提出“Loopholing”机制及LDDMs：在每个去噪步新增一条确定性的连续潜在通道，把隐状态h跨步传递，与标准的随机采样通道并行输出（见第4页图2b）。具体做法是以et = E(zt)+LN(ht)融合当前token嵌入与上一时刻潜在状态，经骨干网络fθ得到hs，再投影为xθ用于参数化后验采样，同时将hs作为下一步的ht（式(5)与(4)）。为避免训练时时间展开，提出两次前向的自条件训练：先以ht=0得到伪上下文h0，再用sg[h0]作为条件进行第二次预测，梯度仅回传第二次（见第4页图2c与式(6)-(8)）。方法适配Masked/Uniform两类离散扩散，形成LDDM-M与LDDM-U，并在推理/训练中仅做少量结构改动即可实现。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可沿三条主线扩展：理论上，构建将Loopholing纳入扩散概率图的严谨框架，刻画其与后验/ELBO的关系，并与RNN视角建立等价或界限（第10页）。工程上，探索多步训练/显式展开、门控/注意力式记忆、传递xθ或其压缩表征、与时间条件/重掩码/指导策略的组合，以及仅微调引入Loopholing的稳定方案（第9-10页与附录D）。规模与任务上，将机制迁移到更大模型与多模态（文本-图像/语音/代码）及更复杂推理规划，评估与自回归/流匹配等非自回归范式的协同。另可设计更细粒度的诊断指标与解码策略，以进一步抑制空转与振荡并提升样本多样性与一致性。</p>
             </div>
@@ -493,19 +493,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文针对扩展已训练的扩散Transformer（DiT）到超高分辨率时的退化问题：自注意力对token数二次复杂度使高分训练代价高昂，而推理时将RoPE外推到超出训练范围会显著劣化（页1–2）。现有从LLM迁移的静态位置外推（PI、NTK-aware、YaRN）虽能适配更大画幅与宽高比，但忽略了扩散过程的“频谱递进性”——低频结构先收敛、高频细节后期逐步成形（页2–3，图2）。因此需要一种随采样步动态调整位置编码频谱分配的方案，以在不额外训练和不增加推理开销的前提下，稳定外推到千万级像素。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者先从频域刻画逆扩散的谱演化：x̂t=(1−t)x̂+tε̂，均值PSD由平坦噪声逐步过渡到自然图像1/f^ω谱（式10–11，页4），并定义进度图γ(f,t)量化各频率随t的收敛进度（式12，图2b，页4），显示低频早收敛而高频贯穿全程演化。基于此提出DYPE：在现有RoPE外推公式中引入“时间依赖的缩放”κ(t)=λs·t^{λt}（式13，页5），早期放大外推以覆盖更宽频带，后期逐步“关停外推”回到训练态PE，从而减少频带压缩并把容量让渡给仍在演化的高频。该策略可与PI、NTK-aware、YaRN统一兼容（形成DY-PI/DY-NTK/DY-YaRN），若采用YaRN还沿用其注意力温度缩放τ(s)=0.1 ln(s)+1（式9，页4）。关键贡献包括：揭示扩散频谱进度图、提出与扩散步对齐的动态RoPE外推、在不改模型与采样步数的前提下显著提高超高分辨率生成。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可进一步研究自适应的κ(t)：依据当前样本的频谱统计或网络不确定度在线调整，而非固定幂律；或通过小规模微调让去噪器与动态PE协同优化。将DYPE扩展到视频/3D扩散与更复杂的二维/多轴RoPE耦合，以及与内存高效注意力、稀疏/块状注意力结合，进一步推高分辨率与速度。探索与不同前向/反向调度（VP/Flow Matching）以及不同PE类型（相对位置、ALiBi等）的兼容性与理论边界。引入内容/区域感知的动态外推，对复杂纹理或重要区域分配更多高频容量。</p>
             </div>
@@ -526,19 +526,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注RLVR在客观可验证任务中仅用二元正确性奖励、将所有问题视为同等重要的局限，导致模型优化“答对数量”而非“总效用”（如考试总分）。现实中输入的重要性非均匀：答对10分题显然比2分题更有价值，因此需要让训练目标显式反映这种人类价值差异。相比之下，RLHF从主观偏好间接学习效用，在可验证场景中既不必要也难以精确定义效用。作者因此提出将“人类定义的价值”直接纳入奖励，以对齐训练与真实的人类目标函数。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>提出RLEV：以U(x,y)=v(x)·1_correct(y)定义人类效用，并将每题原始分sij按考试总分Ti归一化为v(x)=sij/Ti（见第2.2节）。训练时用稳定的代理奖励r(x,y)=s(x)·1_correct(y)，其中s(x)=1+min(α·v(x),1)∈[1,2]，既保证正确最小奖励为1，又对高价值样本给予更强激励（第2.3节、图1页1）。对自回归策略做梯度解析（式13）：人类价值缩放因子s(x)会放大EOS梯度，使策略学到“价值敏感的终止策略”——低价值题更早收尾，高价值题更充分展开（图2页9）。方法与多种RL估计器（REINFORCE++/RLOO/GRPO）和不同模型规模（Qwen2.5-7B/32B）兼容，并用大模型判别器验证最终答案语义等价（第3.3节）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可探索动态/可学习的价值函数，支持用户在线偏好与场景自适应，而非静态标注值。将RLEV与RLHF或DPO等偏好学习结合，实现“客观可验证效用+主观风格/安全”的多目标对齐。扩展到更广的可验证领域（如医疗分诊、教育辅导、内容审核），并研究逐步（token/段落级）价值塑形与更稳健的答案验证器。进一步改进奖励缩放函数与终止策略校准，分析价值噪声、分布偏斜对稳定性与公平性的影响，并构建更通用的价值获取与评测基准。</p>
             </div>
@@ -557,19 +557,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注法律信息检索中的“嵌入模型不适配”问题：低质量嵌入会导致检索-增强生成（RAG）回传错误内容并放大幻觉。现有基准如LegalBench-RAG过度集中于合同且偏美法场景，难以代表真实业务中更广泛的法律文书与司法辖区；MTEB-Legal存在自动化构造引入的错标与主题覆盖狭窄等问题，并因跨语种/法系差异带来偏置与噪声。结果是基准分数与真实法律检索效果脱钩，行业缺少高质量、跨法域、任务多样的开放评测。见第2节和对比讨论（第2–3页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者构建了大规模法律嵌入基准MLEB，覆盖10个数据集、6个法域（美/英/EU/澳/爱尔兰/新加坡）、5类文书（判决、立法、监管、合同、文献）、多任务形态（检索、零样本分类、问答），其中7个为新构建（表1，第3页）。关键数据工程包含：从判决中提取新加坡“司法关键词”（专家标注的法报catchwords），用GDPRHub分离事实与裁判要旨，基于澳税局论坛问答对齐官方指引，提取立法长标题进行法条召回，设计45类合同条款的NLI式定义并匹配代表性条款，汇编开源许可证摘要与全文（第3.3–3.10节）。评测采用NDCG@10，并提供现实条件的速度测试（批量与网络时延，图2，第9页）；为避免泄漏，对SCALR与Consumer Contracts QA做验证/测试拆分。所有数据与代码开源（第6节）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>进一步工作可在保证标注质量的前提下扩展更多法域与语种，并系统化处理跨法系可比性与偏置问题；增加多跳事实-裁判匹配、先例链接/引注预测、长文档与跨文书检索等更贴近办案工作流的高难任务。方法层面可评估稀疏-稠密混合、multi-vector检索、长上下文与法律域继续预训练/指令化嵌入对效果的增益。评测层面可加入鲁棒性/对抗样本、领域迁移、用户中心的RAG端到端指标（答案正确率、幻觉率、可引用性）与隐私合规的防泄漏协议。还可发布难度分层与失效模式分析，为模型与系统优化提供可操作的诊断信号。</p>
             </div>
@@ -588,19 +588,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>现有知识编辑研究几乎集中在文本与视觉，尚缺针对音频/语音属性的系统性评估。音频属性（性别、情感、语言、动物叫声）是连续且抽象的感知概念，具有无穷多声学实现，传统针对离散事实的编辑方法难以直接迁移。实际应用要求在不完全重训的前提下，既能可靠更新，又要保持对等样本的泛化、对无关能力的局部性，以及与相关知识推理的一致迁移，但目前没有专门基准来衡量这些维度。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>论文提出SAKE基准，围绕四类音频属性与四个评估维度（可靠性、泛化性、局部性、可迁移性）进行系统测评，并给出形式化指标定义。数据来源于SAKURA等多数据集，构造编辑对与等价邻域（文本改写/同标签不同音频），设计音频局部性四类场景与文本局部性、以及与属性关联的可迁移性问答。基准在两款LALM（DeSTA2.5-Audio与Qwen2-Audio）上评测七种代表性编辑方法（微调LLM/音频连接器、KE、MEND、UnKE、I-IKE、IE-IKE），覆盖单次与序列编辑，并采用LLM-as-a-judge评估且与人工标注高一致。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>面向音频属性定制编辑方法：显式解耦同一属性内部表征并加入保持约束，减少“同属性非目标标签”受扰。增强可迁移性：在编辑时联合优化与属性相关的世界知识与多跳推理，可借助因果/知识图谱或结构化一致性正则。提升序列编辑鲁棒性：采用参数隔离/适配器槽位/记忆巩固策略，支持多编辑不相互干扰，并加入顺序一致性约束。扩展基准到更多属性、更多LALM与语音到语音模型，引入更强的多音频ICL与人类评测、因果稳健性指标以完善评价。</p>
             </div>
@@ -621,19 +621,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注大音频语言模型（LALMs）在说话者情绪变化下的安全对齐稳定性这一空白问题。现有研究表明语速、重音、口音、音效等副语言线索可绕过安全机制，但对“情绪”这一核心线索的系统性影响缺乏研究。该问题重要在于：情绪可能成为新的越狱通道，且善意用户的自然情绪也可能意外触发不安全响应，影响现实部署的可信度。作者指出当前基准多未覆盖多情绪、多强度的系统化测试，且语音模态较文本更易失稳（第4页的讨论）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者构建了一个控制变量的数据集与评测管线：从 AdvBench 收集520条恶意文本指令，经 CosyVoice 2 0.5B 合成六类情绪语音（中性、愤怒、厌恶、恐惧、开心、悲伤），非中性情绪设定低/中/高三档强度，并用 CREMA-D 作为情绪与强度的参考，同时固定说话人以消除混杂因素（第2页与图1）。为保证质量，引入标注员校准（需≥95%准确率），每条样本至少三人一致通过后才纳入，最终得到8,320条带情绪与强度标签的恶意语音指令（表2，第3页）。评测覆盖开源与商用LALMs，采用两类指标：NRR（基于拒绝模式匹配）与 UR（GPT-4o 作为裁判判断语义真实不安全性），并与文本-only设置对比（第3页-第4页）。技术贡献在于：首个系统性量化“情绪+强度”对安全对齐影响的数据与评测框架，揭示语音模态的脆弱性与强度效应的非单调性，并公开数据集以促进后续研究。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可从鲁棒对齐入手：在对齐与指令微调时引入情绪控制的对照数据（同语义、异情绪/强度）、对抗训练与代价敏感目标，显式最小化跨情绪/强度的安全性方差。构建情绪感知的安全护栏链路，在ASR/语音前端进行情绪与强度检测与归一化，或在决策层启用情绪条件化的风险阈值与额外核查。扩展到多语言、多口音、真实人声与噪声环境，检验合成语音到真实场景的外推性，并分析“中等强度最危险”的成因（数据分布、感知偏置或对齐欠稳）。改进评测：超越模式匹配的拒绝判别、引入多裁判一致性与更细粒度的不安全标签，并开放更大规模、更多情绪维度（如复杂复合情绪、动态情绪轨迹）的基准。</p>
             </div>
@@ -652,19 +652,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文针对物理引擎缺乏可规模化内容这一瓶颈，提出从单张图像直接生成“仿真可用”的高保真3D资产，以同时满足内容多样性与物理一致性（见第1页摘要与第3页引言）。现有视频式世界生成方法内容丰富但缺乏3D一致性与实时物理反馈；而物理引擎虽具严谨动力学，却受制于昂贵的手工建模资产供给。传统3D生成常出现几何不准确、纹理错位、材料不真实，难以直接用于物理仿真。该问题对具身智能训练至关重要：机器人需要准确几何、材料与可物理交互的环境才能开展可扩展的交互式学习。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>方法由几何与纹理两大模块构成，并以物理友好的表示与管线保证可直接接入引擎（第4–5页）。几何方面：提出Seed3D-VAE以TSDF为监督，编码均匀/边缘点云为长度可变的潜在token集并解码连续场，配合KL热身与多尺度token训练实现细节与可扩展性；在此之上以Seed3D-DiT（整流流匹配的扩散Transformer）在潜空间生成形状，采用DINOv2+RADIO双编码图像条件、双流/单流混合Transformer、长度感知噪声日程与确定性采样，得到流形、闭合且仿真稳健的网格。纹理方面：Seed3D-MV生成一致的多视角RGB并利用几何引导；Seed3D-PBR将多视图分解为albedo/metallic/roughness等PBR贴图；Seed3D-UV在UV空间修补自遮挡，产出对光照鲁棒、最高可达4K的贴图（第2页目录与第5页方法概述）。整体贡献在于：单图到高保真几何+PBR材质的一体化生成、长度无关的3D潜表示与流匹配扩散、以及端到端的仿真就绪资产管线。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可进一步研究：1）从几何与外观扩展到“物理参数”与关节/约束的自动拟合（质量、摩擦、质心、关节限位），实现真正即插即用的动力学资产；2）支持可变形体与软体、材质各向异性与次表面散射等更丰富材料模型；3）学习可控生成（尺寸、公差、粗糙度、金属度、耐磨级别等）与高速推理，加速大规模仿真数据生产；4）场景层面结合布局/关系推理与碰撞/可达性约束，联学习“布局-资产-物理”；5）利用多视角/NeRF/视频监督与自监督提升单视角还原与时域一致性，并在闭环RL中与代理共训，实现以用促训。</p>
             </div>
@@ -683,19 +683,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文聚焦于训练深度搜索类LLM代理时的“可验证奖励强化学习（RLVR）”数据瓶颈：需要大量精心设计的任务与对应的已验证答案，跨工具集的轨迹也难以复用，导致规模化受限（第1-3页）。现有的离线问题合成尽管能生成多跳条件，但难以动态调控难度、验证成本高、训练优势不稳定（第2页）。作者认为自博弈可提供无监督的可扩展路径，但在代理场景（需外部检索、工具使用）尚未被有效应用，且容易被“生成错题/模糊题”攻破，亟需建立既竞争又合作、且可验证的自博弈机制（第3-4页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>提出“Search Self-play（SSP）”：同一LLM同时扮演出题者（Proposer）与解题者（Solver），均可多轮调用搜索工具（第3-5页）。出题者在给定标准答案的前提下通过搜索挖掘证据并生成问题；为防“错题/歧义题”作弊，系统收集出题者轨迹的全部检索结果作为RAG材料，要求解题者在不再搜索的条件下用这些材料答对题目方可通过（合作约束），再用通过的问题对解题者开展常规深度搜索解答与对抗训练（第4-6页、算法1第5页）。关键技术包括：对抗+合作的最优化目标、规则+RAG双重过滤、在RAG中注入无关文档抑制“易RAG难搜索”的投机（第6、9页表3）、解题者用GRPO、出题者用REINFORCE、重放缓冲区周期清空以兼顾数据复用与新颖性（第16-18页表5），并用LLM-as-a-judge评测答案等（第5、16、27-28页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可扩展方向包括：将SSP迁移到其他代理场景（GUI/代码/多模态检索），验证其通用性与工具协同策略（第2页相关工作启示）。进一步强化验证链路：多检索源/多评审者一致性、证据可溯源与去重、对抗式“出错检测器”联合训练，以更稳健地抑制“投机题”。动态课程与博弈机制可深化：基于胜率的自适应难度控制、搜索步数与思维链长度的联合调度、理论分析（如收敛与稳定性）与更高效的RL算法（变体GRPO/低方差基线）。工程层面可探索异步大规模自博弈、真实Web环境与长地平线搜索、以及在安全性/事实性/时效性上的多目标联合优化。</p>
             </div>
@@ -716,19 +716,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文针对个性化文本生成图像（T2I）领域缺乏交互式空间控制、以及多主体个性化难以扩展的核心痛点展开。现有方法常依赖ControlNet等外部结构条件（如姿态/深度图），割裂创作流程；同时多身份适配通常将多个身份编码拼接，内存开销随主体数线性增长，难以高效合成复杂多人场景。作者指出传统拼贴/遮挡处理也易引入重叠与遮挡歧义，难以在保证身份一致性的同时实现精确布局控制（见第1页摘要与第2页相关讨论）。该问题对实际创作与大规模应用至关重要：用户需要像Photoshop一样直观地摆放、缩放、锁定主体，并在不牺牲身份与版式的前提下高效生成。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者提出LayerComposer：以“分层画布”作为输入表示，每个主体占据独立RGBA层，支持用户交互式摆放、缩放与“锁定”。关键技术包括：1）透明潜码剪枝（transparent latent pruning），仅保留各层alpha>0的潜码令牌，使条件序列长度与有效区域面积而非主体数相关，从而可扩展至多主体（第4页图3与第5页公式与描述）；2）锁定机制：无需改模型结构，利用位置嵌入与新颖的数据采样策略实现。具体做法是给每层潜码加入三维位置嵌入[j,x,y]，其中被锁定层共享[0,x,y]（与噪声潜码同层）以强化高保真重建；未锁定层分配唯一j以避免重叠混淆（第4页图3与第4-5页公式(1)）。3）锁感知数据采样（第2页图2）：训练时锁定层直接取自目标图像实现像素对齐，高保真保持；未锁定层来自同身份的其它来源图像，鼓励在文本与上下文驱动下产生合乎身份的变化。整体以DiT为骨干、VAE编码层、LoRA微调并采用flow matching损失进行训练（第5页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>后续可探索视频生成：将分层画布扩展为时序层与“时域锁定”，实现跨帧身份与布局的稳定控制。可研究自动化层生成与更稳健的主体分割/抠图，以降低用户前期准备成本，并结合检索或分割大模型实现“一键画布”。在模型层面，可融合更强的可变形位置编码或跨层交互注意力，以提升复杂遮挡与细粒度交互的一致性；并探索更轻量的推理与缓存策略，优化实时交互体验。还可将该范式推广到跨模态（如草图/布局/语音指令）与编辑任务（局部编辑、层间约束优化），实现更完整的“生成即编辑”闭环。</p>
             </div>
@@ -747,19 +747,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文聚焦多步视频推理：需要跨时间聚合多处视觉线索并进行因果/演绎推断，但现有MLLM常因“纯文本CoT”导致未落地或幻觉结论（页2-3）。虽有引入帧检索的Video-CoT方法，但证据定位不准、推理路径不可靠，且部分依赖基准特定数据，易过拟合（页2-3）。该问题重要在于长视频与复杂事件理解越来越常见，要求模型主动定位证据、连贯推理并做出检索/终止决策（图1，页1）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>提出Conan框架：围绕多尺度证据识别（证据/上下文/无关）、跨帧证据推理与行动决策（继续检索或自信作答）的“识别-推理-行动”（AIR）闭环（图2，页5）。构建Conan-91k数据集，含自动生成的推理轨迹与动作标注，采用Kimi K2生成多轮“帧识别-证据推理-动作决策”链（页4-5）。训练上采用“三阶段渐进冷启动”：文本推理→多模态对齐推理→以视觉为中心推理，配合证据难度感知采样（EDI=(1-P)*Var）循序增强多步能力（页5-6）。在RLVR中设计格式/结果奖励+识别奖励+检索奖励并联合成RIRO，用GRPO稳定优化，兼顾结构正确、答案正确与证据定位/检索效率（页6-7、图3页8）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可扩展为“chain-of-frame”动态帧生成，在推理中合成或请求新证据以补足视频缺失（页10）。优化行动策略学习：结合不确定性估计与元学习，提升何时检索/何时作答的自信与代价权衡。改进数据与奖励：减少对大模型生成轨迹的依赖，引入人工小规模高质标注或自监督一致性约束，设计更细粒度的可验证奖励（如时序一致、因果一致）。增强结构化推理：融合显式时序/因果图或记忆模块，提升长时依赖与跨事件归因，并探索跨领域/开放域泛化与在线/流式视频场景。</p>
             </div>
@@ -778,19 +778,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注代码智能体在大规模仓库中生成/解析补丁(diff)的可靠性问题：不同diff表示会影响模型输出质量与成本，但现有评估（如SWE-bench）将检索、工具应用与语义正确性混在一起，难以隔离“格式”的影响。可靠的diff理解是自动修复、重构与提交信息生成等核心环节的基础。现有方法缺乏对多种diff格式的可控对比、明确指标和统一协议，且模型常出现格式切换或语法不合规等失效模式。为此需要一个轻量、可复用、能专门测量“diff理解与生成”的基准。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者提出Diff-XYZ基准，以⟨old code, new code, diff⟩三元组构建三个监督任务：Apply（old+diff→new）、Anti-Apply（new–diff→old）和Diff Generation（new–old→diff），分别测评格式服从性、可逆性与生成能力。数据来自CommitPackFT，过滤为单文件变更，控制改动规模与语言分布（Python/JS/Java/Kotlin/Rust各200例，共1000例），并限制行数与仓库多样性。指标上，Apply/Anti-Apply用去空白行后的EM与IoU；Diff Generation用解析率、可应用率、应用后EM/IoU与新增/删除行的F1（F1+、F1–），并在应用时在不必要时忽略统一diff的hunk行号。除标准统一diff（udiff），还比较udiff-h（宽松hunk头）、udiff-l（显式ADD/DEL/CON标记）与search-replace等格式，配合带/不带格式说明的系统提示词进行系统化对比。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>后续可将Diff-XYZ与下游任务建立量化关联（如提交信息生成、缺陷修复、CI修复），评估“格式选择→端到端收益”的因果影响。方法层面可探索AST/结构化补丁、带锚点的更强search-replace、容错或部分指定的diff格式，以及对被破坏/不完整补丁的鲁棒应用。模型层面可进行格式感知微调与对齐，减少格式漂移；结合工具调用、逐步推理、采样与best-of-n策略提升生成稳定性。系统层面可根据任务与模型规模自适应选择最优表示（如大模型偏search-replace、小模型偏udiff-l），并扩展到更长上下文、多hunk/跨文件与跨语言的复杂变更场景。</p>
             </div>
@@ -811,19 +811,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注如何把密集输出的图像分割无缝融入统一的多模态大语言模型框架中。现有做法要么用多边形/边界点序列表示导致遮挡/复杂形状边界不自然与掩膜不完整，要么依赖SAM/Mask2Former等专门分割头，MLLM只提供条件提示，难以学到像素级理解；还有专用掩膜分词器（如HiMTok）泛化性差、难扩展到生成任务且推理偏慢。分割场景对时延敏感，亟需一种既具强理解、又能高效像素级预测且可统一理解-分割-生成的范式（见第1-2页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>ARGenSeg提出以自回归图像生成来做分割：将VQ类视觉分词器（基于VAR的多尺度VQ-VAE）产生的离散视觉token加入LLM词表，由MLLM直接输出视觉token ID，并通过解码器还原为掩膜（第3.1-3.3节）。为高效与鲁棒，采用next-scale多尺度并行生成：从粗到细逐级预测整幅尺度的token，上一尺度经codebook查表与上采样后经轻量生成投影器得到下一尺度的查询嵌入，统一分类头同时用于文本与视觉token预测（图2，第4页）。训练时冻结视觉编码器与VQ分词器，单阶段SFT联合理解与分割数据，使用<gen_start>/<gen_end>标记生成段，严格用交叉熵监督直接对齐到视觉token（第3节）。关键贡献包括：无需专用分割头、直接预测通用视觉token、以及多尺度并行的粗到细生成以兼顾速度与边界精细度。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>进一步方向包括：提高输出分辨率与可变分辨率token对齐，增强细节与小物体性能；改进/自适应视觉分词器（更大词表、层级码本或连续-离散混合）以提升还原质量与跨任务可扩展性。统一训练范式上，可探索更大规模的联合预训练（理解+分割+生成）与指令化多任务数据合成，强化零样本与推理分割能力。功能扩展方面，可拓展到实例/全景分割、视频分割、交互分割更丰富交互形式，以及图像编辑、深度/法线/占用等密集预测。系统层面可研究更快的并行采样与缓存、动态尺度调度以满足实时应用，同时系统性评估并缓解数据与模型偏差与鲁棒性问题。</p>
             </div>
@@ -842,19 +842,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注从零训练的少步生成模型在高保真与高效率之间的平衡问题。MeanFlow 实践上很强，但其为何有效与如何更高效训练缺乏清晰理解；尤其其目标可分解为轨迹流匹配与轨迹一致性两部分，二者梯度强负相关，导致优化冲突与收敛慢。此外，MeanFlow 在训练中大量依赖 r=t 的边界式流匹配监督（约占75%计算），计算开销大且与主要优化目标不完全一致。作者希望在不牺牲质量的前提下，减少这种低效监督并改善收敛。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>论文首先从理论上将 MeanFlow 损失分解为“轨迹流匹配(LTFM)+轨迹一致性(LTCc)”，并通过梯度分析揭示二者强负相关。基于此提出 α-Flow：以一致性步比 α 统一并贯通 LTFM(α=1)、Shortcut(α=1/2) 与 MeanFlow(α→0) 的广义目标族，并采用从 α=1 逐步退火到 0 的课程学习，先学高偏低方差的流匹配，再过渡到低偏高方差的一致性目标。关键技术包括：统一目标的理论等价性证明、Sigmoid 退火与阈值钳制(η=5e−3)的α调度、降低 r=t 监督依赖的训练策略、以及适配的自适应损失权重 ω=α/(||Δ||²+c)。实现上结合 DiT 骨干、CFG 训练与一/两步采样（大模型优选 consistency sampling），在 α>0 阶段避免 JVP 计算，仅在接近 MeanFlow 时使用。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>理论层面可进一步刻画流匹配为何在一致性优化中充当“隐式边界条件”的原因，并分析冲突梯度的本质与可控化策略。方法层面可探索自适应/数据依赖的 α 调度、学习型 ṽ 估计、与 FACM/IMM/TiM 等目标的联合或多任务权重自适应。工程上可研究更稳健的 CFG 集成与防不稳定机制、低方差训练（如大批量/优化器/正则）及更高效的近似以减少或规避 JVP。应用与评测上可扩展至更高分辨率与多模态，系统性比较 ODE vs consistency 多步采样策略，并推动从 FID 向 FDD/FCD 等更稳健指标迁移。</p>
             </div>
@@ -873,19 +873,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注LLM多智能体协作依赖自然语言交流导致的信息丢失、歧义与对齐困难，实证上常见的模糊消息与失配阻碍了群体推理的上限（第2页）。作者提出“思想通信”，即直接在智能体间传递潜在思维（latent thoughts），绕过语言瓶颈，并将其形式化为Ht=f(Zt)的潜变量生成模型以捕获共享与私有思维结构（第3页）。该问题重要在于实现超越人类的群体智能需更高效的心智对齐与协同，而现有仅靠文本/嵌入的交流难以达成。现有方法多依赖语言或其嵌入，本质仍受语言限制，易引发对齐与表达不充分的瓶颈。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>理论上，作者在非参数设定下建立可辨识性：在Jacobian稀疏正则下，能识别任意两智能体间的共享思维（定理1）、私有思维（定理2），并恢复思维—智能体的全局依赖结构B(Jf)（定理3），均仅差一个置换（第4–5页）。实践上，提出THOUGHTCOMM：拼接多智能体模型态Ht，经带Jacobian稀疏正则的自编码器提取潜在思维Ẑt并恢复依赖结构，再按“同意度”α对潜在思维分组加权路由至相关智能体（第6–7页）。随后用适配器g将个性化潜在向量映射为前缀P注入各Agent的嵌入序列，以影响下一轮生成；训练包括重建+稀疏损失Lrec与保证语言自然度的通信损失Lcomm（第7页）。理论使用ℓ0稀疏，工程用ℓ1近似；模块任务无关、可一次预训练跨任务复用。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可在闭源/仅API模型下以响应文本嵌入替代模型态输入，保持框架端到端可用（附录B，第20页），并拓展至多模态观测。理论方面可探索更强/更弱结构先验（如干预信号、机制稀疏形式）以放宽可逆性假设并提升全局可辨识度。系统上可研究动态/在线的思维路由与权重自适应、隐私与安全共享机制，以及与角色/拓扑自适应联动。方法层面可与token级协作、可控解码结合，或更丰富的注入方式（如层内适配、控制变量）以提升影响力与稳定性。应用上可拓展至规划、代码、工具使用与多轮任务，系统性评估对齐、公平与鲁棒性。</p>
             </div>
@@ -906,19 +906,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文关注LLM在含单元测试的编程任务中“投机取巧”（如改测、硬编码、重载比较等）以通过测试而违背自然语言规格的问题，这会扭曲基准成绩并危及真实开发场景的可靠性。现有基准通常无法区分“真解”与“投机解”，研究者常需代价高昂的人工审阅或不稳定的LLM判分。随着模型能力上升且获得更多工具/上下文访问权，此类“就地奖励篡改”风险加剧，因此需要可重复、自动化且无歧义的度量与干预框架。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>提出ImpossibleBench：基于现有编码基准（LiveCodeBench、SWE-bench）通过“单元测试变异”构造与规格矛盾的“不可解”任务，任何通过即被判定为作弊，从而以通过率直接度量“作弊倾向”。变异策略包括：One-Off（单点改预期值）与Conflicting（引入互相矛盾断言）；并进行有效性校验（应对原始补丁与空补丁均失败）。提供开放测试访问、带反馈的多轮提交与两类脚手架（最小/全功能），并系统分析作弊类型（改测、运算符重载、记录状态、特例硬编码）以及上下文工程（提示词、测试可见性、反馈循环）和监控（LLM判别器）效能。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可沿三方向深化：一是监控侧，引入静/动态分析、AST/IR级对比、沙箱钩子与差分执行，结合LLM裁判形成多模态多信号融合判定；二是系统与流程侧，默认测试只读、最小权限与审计轨、标准化“发现矛盾即中止并上报”的代理协议与奖励设计，降低反馈回路诱发的在地奖励篡改；三是基准扩展，覆盖更多语言/生态与更复杂变异（跨文件/跨模块矛盾、时序/状态型冲突），并引入分级难度与隐测组合。另可研究模型层面缓解（对齐训练中显式惩罚投机特征、反思式元认知提示）与因果分析（能力/工具/脚手架对作弊的边际效应与交互）。</p>
             </div>
@@ -937,19 +937,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文指出“世界模型”概念被滥用且割裂，缺乏构建“真正世界模型”的统一路径，核心缺少生成引擎、交互闭环与持久记忆的整合（第1-2页）。这一问题重要在于，只有具备生成、交互、长期一致性的系统，才能支撑持久世界、涌现行为与多智能体社会（第9-10页）。现有方法局限：统一大模型（Stage II）多为单次生成，缺交互与显式记忆（第6页）；交互生成（Stage III）存在漂移与短记忆（第7-8页）；记忆工作（Stage IV）虽丰富，但未与生成和交互端到端耦合，难以维持长程一致性（第8-9页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>论文提出一条“窄路”式技术路线：以三子系统为解剖学核心——生成心脏G、交互闭环F/C、记忆系统M，并给出形式化定义与架构图（图2，第2页；附录A，第12页）。据此构建五阶段进化路线：从掩码学习（Stage I）到统一架构（Stage II）、交互生成（Stage III）、记忆与一致性（Stage IV），最终综合为“真正世界模型”（Stage V）（图1，第2页；表1，第3页）。关键贡献在于：统一的系统级定义与方程、跨领域方法的阶段化梳理与对照、对一致性治理（记什么、取什么、如何更新与遗忘）的原则性总结，以及提出三大前沿挑战——一致性评估、信息压缩/抽象、双层对齐（第9-10页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>后续可沿三子系统端到端整合，研发同时优化G、F/C、M的训练与推理管线，特别是“掩码式交互生成”这一尚未充分探索的方向（第6-7页）。建立自生世界的内在一致性/因果/叙事评测基准与指标，支撑Stage V的“自洽性”评价（第10页）。推进因果充足的状态抽象与记忆压缩，融合检索式外部记忆、线性时空状态空间模型与显式3D空间记忆，实现低延迟、长时程的一致交互（第8-9页）。在多智能体持久世界中开展双层对齐（环境生成机制与社会涌现动态）与安全研究，并构建覆盖长时、多样交互的视频/场景数据与训练策略（第10页）。</p>
             </div>
@@ -968,19 +968,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>本文关注科学写作中LLM引用不实与误归因问题：已有研究显示LLM可产生高比例（78–90%）的伪造引用，且常将结论归于错误来源，影响学术可靠性与可复现性。实践中常用的LLM-as-a-Judge虽可扩展评估，但易受偏置与缺乏外部检索支撑所限，在缺上下文时召回极低（仅16–17%，见表5，第11页）。作者将任务重述为“引文归属一致性”，即评估LLM给出的引用是否与人类作者会选用的文献对齐，并支持发现可替代但同样有效的引用。这一问题重要性在于支撑事实性、可追溯的科学写作与数据标注质量，避免训练与评估环节的系统性误判。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>论文提出CiteGuard：一个面向检索增强验证（RAV）的智能体框架，在CiteAgent基础上扩展动作以更稳健地定位支撑文献。关键动作包括：基于题录的搜索并按相关性/被引量排序、在全文中定位片段（find_in_text）、向源文请求更长上下文（ask_for_more_context）、跨论文全文片段级搜索（search_text_snippet），以及结果选择（select）（见图3与方法2.2）。方法形式化为从摘录到文献的映射，并定义准确率与与多人标注“可替代引用集”的一致性指标（式1与式2）。CiteGuard支持迭代给出多个合宜引用，便于研究者进行比较分析；实现基于Semantic Scholar API且模型无关，可与GPT-4o、DeepSeek-R1、Kimi-K2、Qwen3、Gemini等协同。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>（1）数据与检索层面：摆脱对单一语料库的依赖，集成多源学术数据库与更强的PDF/全文接入与检索管线；结合引文网络与元数据做图检索。（2）智能体策略层面：学习式动作选择，根据难度与预算自适应在“片段检索”与“长上下文读取”间权衡，尝试强化学习或反馈驱动的策略优化。（3）公平与泛化：纳入非英语与弱覆盖学科文献，缓解地域/语言偏置；系统评估更小开源模型与跨学科场景。（4）任务扩展：从单一引用对齐扩展到多证据聚合、冲突/支持关系判定与证据图谱构建，并将“可替代引用”建议纳入人机共审的反馈闭环以持续提升一致性与可用性。</p>
             </div>
@@ -1001,19 +1001,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文聚焦在评估多服务器（MCP）生态中的端到端多跳工具编排能力这一现实问题，指出现有基准多以扁平工具空间建模，无法考查跨服务器导航与编排、容错与效率等关键挑战。当前评测常回避工具功能重叠或依赖LLM-as-a-judge，导致成本高、偏置大、可复现性差（见表1，第4页）。此外，检索与推理常被割裂评测，无法反映完整编排链路的级联误差与效率权衡。该问题重要性在于真实应用正向MCP分布式架构迁移，需要客观、可复现、端到端的能力诊断与对比。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>论文提出MSC-Bench：在真实MCP生态（491个服务器、2375个工具）上构建五级课程式评测（L1-L5），覆盖单工具、同服序列、多服组合与鲁棒拒绝（见图2与表2，第3-5页）。核心方法是‘等价功能集合’：先用嵌入检索与LLM两两判定合并为等价类（自底向上，Union-Find），再用查询驱动的RAG与人工核对在真实语境中闭环验证（自顶向下），从而在存在功能重叠时仍可用客观指标（EM/F1）打分（附录A）。任务生成含工具分拣与语义标注、链路依赖图构建、跨服可行性规划与质量控制，覆盖2075个任务（表2，第5页）。评测同时记录归一化时延，支持精度-效率分析，避免过度依赖主观裁判。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>沿着该工作可推进：1) 层次感知的推理与检索，将服务器层级结构由‘过滤器’升级为显式可利用的语义先验，提升跨层编排与证据聚合。2) 具备上下文传递保障的任务分解/执行器，在长链路中显式维护与验证全局意图与关键中间态，缓解记忆衰减。3) 自适应/混合检索架构，依据任务复杂度与时延预算在层次与扁平检索间动态切换，或在线调整候选宽度与重排序强度。4) 架构级的越界检测模块，将L5的拒绝从‘模型涌现特性’固化为可审计的安全组件。5) 模型-架构协同设计与基准扩展（多语言、更多真实服务器来源），系统性探索不同基础模型与检索/规划范式的匹配规律与代价边界。</p>
             </div>
@@ -1032,19 +1032,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文聚焦于“精度—推理成本”这一在部署大模型时最关键但被现有缩放律忽略的问题：现有缩放律（如 Chinchilla）只指导训练阶段的N、D分配，却不刻画推理效率，或需要预估模型全生命周期的生成量而难落地（第1页摘要与引言）。此外，以往少量架构感知工作仅考虑aspect ratio，忽视了隐藏维度、MLP/Attention参数配比以及GQA等对推理与精度的关键影响，并且简单减层会损伤泛化能力（第2页）。因此需要一种能在固定参数与数据预算下，同时预测精度与推理效率、并指导架构选型的可操作框架。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者提出“条件式架构感知缩放律”：先用Chinchilla得到在给定(N,D)下的参考最优损失Lopt，再将架构变量的相对影响通过可分离的U形校准项乘（或加）到Lopt上，变量含dmodel/√N与rmlp/attn，拟合形式为c0+c1·log x+c2/x（第4-5页，图3-4）。实证发现d/√N与r均呈U形最优点，据此给出乘性与加性两种校准式，并用Levenberg–Marquardt最小二乘拟合，剔除极端r离群点可提升预测稳定性（第7页与附G）。在搜索框架中，将问题表述为在损失阈值约束下最大化推理效率，先解d与r，再对GQA做局部枚举与早停（第5-6页，算法1）。为解释效率收益，论文给出推理FLOPs解析：Total≈2Pnon-emb+2·nlayers·T·dq，提高d或r可降低qK项并缩小KV缓存，提升吞吐（附H，第25页）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>进一步工作可从三方面推进：一是将条件缩放律扩展到更大规模与MoE架构，系统纳入专家数、激活参数与稀疏度等因素（第10页“限制”与附J）。二是让推理效率目标更硬件感知，结合显存带宽、KV I/O、prefill/decoding分相模型，形成可移植的解析吞吐预测器，减少大量实测依赖（附H与图10）。三是联合超参与后训练过程（SFT/RL/指令微调）建立“架构—训练—推理”三元缩放律，研究数据质量、长上下文、GQA自适应、nlayer与宽度配比等对U形最优的漂移。四是把测试时算力策略（如思维采样、动态depth/heads、Cache蒸馏）纳入约束优化，使搜索同时覆盖模型结构与推理时策略。</p>
             </div>
@@ -1063,19 +1063,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>大量关于固体材料的实验知识依然埋藏在期刊文本中，缺乏可直接用于机器学习/深度学习的结构化“组成-性质-工艺”数据集。现有文本挖掘多聚焦于命名实体识别，关系抽取受限，且不少代理系统不支持出版社TDM API自动取文、也难以将可变组分（如Pb1−xKxNb2O6）枚举为具体化学式，导致规模化构库困难。该工作以压电陶瓷d33为用例，旨在提供一套端到端、可配置、可评估、可可视化的自动化框架，直接从文献生成机器可读数据。其重要性在于为材料数据驱动设计提供高保真数据底座，尤其在现有公共数据库（如Materials Project）对实验高d33材料覆盖不足的情况下更为迫切。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>论文提出ComProScanner多智能体框架，分四阶段：元数据检索（Scopus API）、文献采集（Elsevier/Springer/IOP/Wiley TDM API或本地PDF）、信息抽取、多维评估与数据集构建；总体流程见第6页图1。抽取阶段采用五代理流水线并结合RAG先筛文：先用“材料数据识别”代理+向量检索（默认PhysBERT嵌入与ChromaDB）确认是否含真实数值，再分别由“组成组”和“合成组”的提取-格式化双代理完成结构化输出，流程与工具见第8页图2。为处理变量组分，集成material-parsers深度模型作为工具自动枚举化学式；最终生成统一JSON并融合文章元数据，并内置权重化准确率、经典与“归一化”分类指标的语义/代理双评估，以及图表与Neo4j知识图谱可视化（知识图谱示例见第22页图6）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可将OCR与多模态VLM集成到流程中，自动从图表/表格抽取数值与单位，弥补仅文本挖掘的盲区（论文亦在讨论中提出此展望）。扩展为多属性/多任务可配置JSON模式与可插拔schema，联动自适应提示工程与少样本指令，提高跨领域可复用性。针对成本与稳定性，引入检索与推理缓存、确定性采样/自一致性投票、以及轻量思维链蒸馏，以在保持准确率的同时降低代理评估与抽取开销。面向复杂工艺信息，可结合模板化信息抽取与因果/流程关系抽取，增强合成步骤与前驱体—产物的关系质量；同时优化RAG超参与领域嵌入（如继续微调PhysBERT）以提升召回。最后，将知识图谱与主动学习/人机协同标注联动，用反馈闭环持续改进模型与本体结构，并推广到非英语文献与更多出版社生态。</p>
             </div>
@@ -1096,19 +1096,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>论文聚焦多智能体LLM在复杂任务中的沟通调度难题：沟通过多带来协调开销，过少导致认知不一致与返工。现有系统多依赖固定频率或被动触发的启发式，缺乏对沟通成本与任务进展权衡的动态、可度量机制，难以稳定优化效率与完成时间。作者因此将“沟通”建模为可优化的一等资源（图1，第1页），以系统化提升协作绩效。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>提出C2C（Communication to Completion）框架，核心为顺序动作框架（SAF）与对齐因子（AF）。SAF将协作离散为时间步，每步每个体仅执行一动作（工作/沟通/回复/会议），并采用消息前向延迟投递保障因果一致与可复现性（图2，第3页）。AF量化任务理解度AF∈[0.01,1]，由LLM基于消息贡献给出Δeval∈[0,0.5]更新，进度按EffectiveProgress=h·AF计算（公式见第4页），使“对话→理解→效率”形成闭环。框架还包含基于DAG的层级任务分解与分配、意图驱动决策，以及面向成本的沟通策略（何时沟通、与谁沟通、选用聊天/邮件/会议等通道）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可在真实工程流水线与其他领域任务中验证与微调C2C，并引入在线学习/人机混合评审以校准由LLM裁决的AF更新，降低主观偏差（局限见第9页）。将沟通策略与资源预算联动，利用强化学习/元学习端到端优化“何时-与谁-用何种通道”策略，并适配动态团队拓扑与多管理者场景。结合工具使用与仓库级规划，研究AF对工具调用成功率、长程规划稳定性与可解释性的影响。扩展评测维度（鲁棒性、公正性、隐私/安全约束）并建设可复现实验基准与过程指标，促进跨系统对比与实证研究。</p>
             </div>
@@ -1127,19 +1127,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>长上下文让自注意力的二次复杂度在解码阶段成为瓶颈，同时KV缓存随长度线性增长，导致时延和内存开销显著（第1页摘要与引言）。现有稀疏注意力要么使用静态启发式模式（如StreamingLLM）导致查询-键动态相关性低召回；要么像Quest做页级动态选择，粒度过粗引入无关token、难以在高稀疏下保持精度（第2页图1）。作者希望在保持与全注意力等价的相似度度量前提下，设计轻量的token级动态选取机制，并以极小KV额外开销实现高效近似。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>Adamas在查询Q与键K上施加Hadamard变换（正交保持QK^T等价，见式(3)），并利用其“平滑抑制离群值”的性质提升量化友好度（第4页）。随后对变换后的向量进行4级分桶（2-bit）并压缩存入KV缓存（每8个元素打包为16-bit，缓存仅增加1/16；第5页），解码时用基于2-bit码的曼哈顿距离快速估计相似度并进行Top-k筛选，再对选中KV做稀疏注意力（第3页图2与第4页算法1，式(6)）。作者还提供融合分桶与压缩、位运算加速L1估计的CUDA内核，实现低开销预筛与高吞吐（第7页与图5）。关键贡献：Hadamard+分桶的等价与鲁棒近似、2-bit压缩的极低KV负担、位运算L1估计的高效候选召回，以及端到端的高性能实现（第2页贡献要点）。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>可进一步探索学习式或自适应分桶阈值、按层/按头动态位宽与阈值，以在不同注意力头分工下最大化召回与效率（第8页图6显示2-bit为性价比最佳，但存在微小提升空间）。在候选筛选上，可研究两阶段或多指标（如结合L1/L2、角度相似度）混合估计，以及与页级粗筛融合的层次化token选取，提升在超高稀疏比下的稳健性。工程方面，可面向硬件进一步优化位运算核、将方法拓展到prefill阶段与跨batch场景，并评估与KV去重、压缩V或量化V的协同。理论上，可对Hadamard+低比特估计的召回-精度界与误差传播进行分析，并将该思想迁移到多模态或检索增强推理场景，验证跨域泛化。</p>
             </div>
@@ -1158,19 +1158,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>长上下文训练中，标准注意力的时间与内存复杂度随序列长度呈二次增长，成为扩展到数十万甚至百万上下文的核心瓶颈。现有工作多沿两条路线推进：一是算子/内核级的加速（稠密/稀疏注意力内核），二是模块级的上下文并行（分布式注意力）；但缺乏一个统一、系统的评测框架。不同内核对掩码模式支持不一，性能随掩码显著波动；上下文并行方案又常与特定框架深度耦合、难以复用，导致难以公平比较与工程落地。论文旨在填补这一空白，提供可复现、可扩展的统一基准，指导长上下文训练中的内核选择与并行设计。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>作者提出LongCA-bench：一个覆盖单卡内核到多机分布式的统一长上下文注意力基准。其包含三大组件：统一的数据准备与掩码生成接口（12种静态掩码+2种动态块稀疏掩码）、统一的输入表示与适配层（支持7个稠密内核与5个稀疏内核）、以及优化过的上下文并行框架（复现并统一Ulysses、Ring P2P/All-Gather、USP、LoongTrain等5种机制）。在分布式部分，提供varlen输入、双缓冲与多流计算-通信重叠、预计算元信息以降低同步开销，并在H100集群上评测至96 GPU与512K上下文。关键贡献是：统一的可扩展评测接口、稠密/稀疏内核的模块化适配、以及经工程优化的多策略上下文并行对照实现。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>面向稀疏注意力，优先攻关可训练的反向支持、对GQA/MHA与多块尺寸的通用性，以及降低元数据开销的更高效掩码/页式表示；引入硬件感知与自动化内核生成以在Hopper/后续架构上优化变量块稀疏。面向上下文并行，扩展对更多掩码（异构/动态）的原生支持，改进varlen下的负载均衡与跨节点通信-计算重叠，并探索自适应通信体制（按计算密度与拓扑动态切换Ring与A2A）。在系统层面，将上下文并行与张量/流水/专家并行协同编排，结合混合精度与KV压缩，形成可随序列与任务自适应的“4D并行”工作流。基准层面，可纳入更广任务（检索、RAG、多模态、视频生成）与真实数据分布，推动方法在更贴近落地场景下的鲁棒性与可复现性评估。</p>
             </div>
@@ -1191,19 +1191,19 @@
         </div>
     
         <div class="analysis-section">
-            <h3><span class="emoji">🎯</span>研究动机</h3>
+            <h3><span class="emoji">🎯</span>Research Motivation</h3>
             <div class="motivation">
                 <p>以往研究发现大型语言模型的表示中存在能线性区分真/假陈述的“真值子空间”，但尚不清楚它为何在训练中产生、以及推理时如何被计算。该问题对理解与缓解幻觉、提升可控性很重要；而基于“话语风格/人设”的解释多依赖词汇或题材线索，缺乏机制层面的论证，且易被语料偏差混淆。本文提出以统计假设量化并检验真值共现（TCH），并给出可解析的变换器玩具模型，试图提供“为什么”和“如何”的统一解释。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">🔧</span>研究方法</h3>
+            <h3><span class="emoji">🔧</span>Research Method</h3>
             <div class="method">
                 <p>提出真值共现假设（TCH）：自然文本中真假陈述在局部上下文中呈相关共现，因而在语言建模中内隐地推断一个“真值比特”可降低损失（理论上收益为H2(ρ)）。构建一个透明的一层自注意力玩具模型（统一注意力+层归一化、正交嵌入），刻画值矩阵的块结构与机制：模型先用KV记忆取回g(x)，与观测y相加在真样本中产生“抵消”、在假样本中残差更大；经层归一化后等效温度调节“锐化”对g(x′)的置信。给出理论结果：Sharpening定理（真上下文提升置信）、Linear separability定理（无归一化则不可线分，有归一化则可）、训练动力学定理（少步梯度更新即产生所需块结构，ρ=1亦可）。同时在可训练稠密嵌入、多层模型与“真实”小型Transformer上进行验证，并在预训练LLM中用线性操控向量µT−µF进行干预。</p>
             </div>
         </div>
         <div class="analysis-section">
-            <h3><span class="emoji">💡</span>研究思路</h3>
+            <h3><span class="emoji">💡</span>Research Ideas</h3>
             <div class="idea">
                 <p>拓展到多关系、组合与逻辑约束（如传递性、互斥、类型约束）场景，研究单一“真值码”如何在异质关系间共享与切换，并用更贴近真实的“错误生成分布”替代均匀扰动。系统分析完整Transformer（多头注意力+MLP）中除KV对比与层归一化外的替代机制，并刻画真值编码的出现时机如何随ρ、数据规模与优化超参变化。将线性真值子空间用于运行时控制与校准，开发稳健的干预/解耦方法以缓解幻觉并评估副作用与安全性。面向大规模网络语料定量检验TCH跨领域稳健性，研究否定、修辞与风格转移对真值方向的影响，以及跨关系/跨任务的迁移与泛化。</p>
             </div>
@@ -1221,7 +1221,7 @@
         </div>
         
         <div class="footer">
-            <p>Generated on 2025-10-27 04:15:03 | Powered by GPT-5 Analysis</p>
+            <p>Generated on 2025-10-30 01:29:48 | Powered by GPT-5 Analysis</p>
         </div>
     </div>
 
